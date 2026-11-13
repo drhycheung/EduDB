@@ -78,8 +78,11 @@ def make_hash(password, salt):
     We use PBKDF2 with SHA-256 and 100,000 rounds. The salt makes two users
     with the same password store different hashes, so an attacker who reads
     the database cannot tell when passwords match.
+
+    The database stores the hash as TEXT, so we return the hex string form.
+    The login check compares this string with the stored string.
     """
-    return hashlib.pbkdf2_hmac("sha256", password.encode(), salt.encode(), 100000)
+    return hashlib.pbkdf2_hmac("sha256", password.encode(), salt.encode(), 100000).hex()
 
 
 def current_user():

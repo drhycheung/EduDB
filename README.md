@@ -98,10 +98,13 @@ These steps assume you have Python 3.11+, Docker, and Git installed.
    ```
    If you already have the folder, open a terminal inside it.
 
-2. **Create and enter a virtual environment** so the packages do not affect your system:
+2. **Create and activate a virtual environment** so the packages do not affect your system:
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
    ```
-   python3 -m venv .venv && source .venv/bin/activate
-   ```
+   Your shell prompt should now show `(.venv)`. Every command below must run
+   with this virtual environment active. On Windows use `.venv\Scripts\activate`.
 
 3. **Install the Python packages** listed in requirements.txt:
    ```
@@ -156,7 +159,8 @@ On Windows, replace `source .venv/bin/activate` with `.venv\Scripts\activate`.
 ```bash
 git clone https://github.com/drhycheung/EduDB.git
 cd EduDB
-python3 -m venv .venv && source .venv/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
 python3 -c "import secrets; print('SECRET_KEY=' + secrets.token_hex(32))"   # paste the printed line into .env
@@ -164,6 +168,24 @@ docker compose up -d
 python3 seed.py
 flask run
 ```
+
+## Troubleshooting
+
+- **Port 5000 already in use (macOS).** On macOS the AirPlay Receiver often
+  holds port 5000, so `flask run` may fail to start, or the browser may show a
+  `403` from a service other than EduDB. Turn off AirPlay Receiver (System
+  Settings > General > AirDrop & Handoff > AirPlay Receiver), or run on another
+  port and open that address instead:
+  ```bash
+  flask run --port 5055
+  ```
+  Then open http://localhost:5055 .
+- **`ModuleNotFoundError: No module named 'duckdb'` (or `psycopg`).** The command
+  ran with your system Python instead of the virtual environment. Make sure the
+  prompt shows `(.venv)`; if not, run `source .venv/bin/activate` first, or use
+  `.venv/bin/flask run`.
+- **"Wrong username or password" for every account.** Run `python3 seed.py`
+  again so the accounts are loaded, then restart `flask run`.
 
 ## Data
 
