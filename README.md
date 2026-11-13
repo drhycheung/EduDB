@@ -57,8 +57,15 @@ EduDB/
 │   └── parquet.html        # F9: rate read from a Parquet file
 ├── queries.sql             # L05: a wrong join and the corrected version
 ├── ai-log.md               # Example of an AI-assisted query log
-├── docs/
-│   └── index.html          # Static preview (a mockup, not the running application)
+├── docs/                  # Static preview (a mockup, not the running application)
+│   ├── index.html          # Preview home: Dashboard (the page GitHub Pages serves)
+│   ├── progress.html       # Progress by learner
+│   ├── myattempts.html     # One learner's attempts
+│   ├── search.html         # Keyword and vector search, with example results shown
+│   ├── documents.html      # Question documents
+│   ├── chart.html          # Server-drawn bar chart by topic
+│   ├── parquet.html        # Rate read from a Parquet file
+│   └── login.html          # Sign-in screen
 ├── LICENCE                 # MIT licence with a data attribution block
 └── README.md               # This file
 ```

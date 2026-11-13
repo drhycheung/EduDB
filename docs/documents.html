@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EduDB — static preview (not the running application)</title>
+  <style>
+    :root {
+      --bg: #f4f6f9; --surface: #ffffff; --ink: #1f2933; --muted: #61707d;
+      --line: #e2e8ee; --accent: #2f6f8f; --accent-2: #1f7a8c;
+      --bar: #2f6f8f; --good: #2e7d57; --bad: #b4463a; --skip: #8a94a0;
+      --banner-bg: #fff8e6; --banner-line: #e6c879; --banner-ink: #6b4e00;
+      --radius: 10px; --shadow: 0 1px 3px rgba(31,41,51,.08), 0 1px 2px rgba(31,41,51,.06);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--ink); background: var(--bg); line-height: 1.5; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .banner { background: var(--banner-bg); border-bottom: 1px solid var(--banner-line); color: var(--banner-ink);
+      padding: .8rem 1.25rem; font-size: .9rem; }
+    .banner b { display: block; margin-bottom: .2rem; }
+    .appbar { background: var(--accent); color: #fff; padding: .6rem 1.25rem;
+      display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .brand { display: flex; align-items: center; gap: .55rem; font-weight: 700; font-size: 1.05rem; }
+    .brand .glyph { width: 26px; height: 26px; border-radius: 6px; background: #fff; color: var(--accent);
+      display: grid; place-items: center; font-weight: 800; font-size: .85rem; }
+    .pill { background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.4); color: #fff;
+      font-size: .68rem; font-weight: 700; padding: .1rem .5rem; border-radius: 999px; letter-spacing: .03em;
+      text-transform: uppercase; }
+    nav.main { display: flex; gap: .9rem; flex-wrap: wrap; margin-left: auto; font-size: .9rem; }
+    nav.main a { color: rgba(255,255,255,.85); }
+    nav.main a:hover, nav.main a.active { color: #fff; text-decoration: none; font-weight: 700; }
+    nav.main a.active { border-bottom: 2px solid #fff; padding-bottom: 2px; }
+    .userchip { background: rgba(255,255,255,.15); border-radius: 999px; padding: .2rem .7rem; font-size: .85rem; }
+    main { max-width: 960px; margin: 1.5rem auto; padding: 0 1.25rem; }
+    .screen-head { display: flex; align-items: baseline; gap: .6rem; margin-bottom: .4rem; }
+    .screen-head h1 { margin: 0; font-size: 1.35rem; }
+    .tag-preview { font-size: .68rem; font-weight: 700; color: var(--banner-ink); background: var(--banner-bg);
+      border: 1px solid var(--banner-line); border-radius: 999px; padding: .1rem .5rem; }
+    .sub { color: var(--muted); margin: .1rem 0 1rem; font-size: .92rem; }
+    .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: .9rem; margin-bottom: 1.25rem; }
+    .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+      padding: .9rem 1rem; box-shadow: var(--shadow); }
+    .kpi .n { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+    .kpi .l { color: var(--muted); font-size: .8rem; }
+    .panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 1rem 1.1rem 1.2rem; box-shadow: var(--shadow); margin-bottom: 1.25rem; }
+    .panel h2 { margin: .1rem 0 .7rem; font-size: 1.02rem; }
+    table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+    caption { caption-side: bottom; text-align: left; color: var(--muted); font-size: .8rem;
+      padding-top: .5rem; font-style: italic; }
+    th, td { border: 1px solid var(--line); padding: .45rem .6rem; text-align: left; }
+    thead th { background: #eef3f6; }
+    tbody tr:nth-child(even) { background: #fafcfd; }
+    .ratebar { display: flex; align-items: center; gap: .6rem; }
+    .track { flex: 1; background: #eef2f5; border-radius: 6px; height: 14px; overflow: hidden; }
+    .fill { height: 100%; background: var(--bar); border-radius: 6px; }
+    .pct { width: 3.6rem; text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); }
+    .chip { display: inline-block; padding: .05rem .55rem; border-radius: 999px; font-size: .8rem; font-weight: 600; }
+    .chip.ok { background: #e4f3ec; color: var(--good); }
+    .chip.no { background: #f7e6e3; color: var(--bad); }
+    .chip.skip { background: #eef1f4; color: var(--skip); }
+    .controls { display: flex; gap: .6rem; align-items: center; flex-wrap: wrap; margin-bottom: .8rem; }
+    select, input[type=text], button { font: inherit; padding: .4rem .6rem; border: 1px solid var(--line);
+      border-radius: 7px; background: #fafbfc; color: #8a94a0; }
+    select:disabled, input:disabled, button:disabled { opacity: .8; cursor: not-allowed; }
+    .badge-only { font-size: .68rem; font-weight: 700; color: var(--banner-ink); background: var(--banner-bg);
+      border: 1px solid var(--banner-line); border-radius: 999px; padding: .08rem .5rem; }
+    ul.results, ol.results { margin: .3rem 0; padding-left: 1.2rem; }
+    ul.results li, ol.results li { margin: .35rem 0; }
+    .src { color: var(--accent-2); font-weight: 600; }
+    .note { color: var(--muted); font-size: .85rem; margin-top: .8rem; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .82rem;
+      background: #f4f6f8; border: 1px solid var(--line); border-radius: 6px; padding: .5rem .6rem;
+      display: block; white-space: pre-wrap; color: #33414d; }
+    footer { max-width: 960px; margin: 0 auto 3rem; padding: 1rem 1.25rem; color: var(--muted); font-size: .82rem; }
+</style>
+</head>
+<body>
+  <div class="banner"><b>Static preview. This is not the running application.</b>This page shows fixed copies of the EduDB screens. No database is connected. The sign-in form, the topic selector and the search box do not work here. The working application runs on your own computer with Docker. Read the README for the setup steps.</div>
+  <header class="appbar">
+    <div class="brand"><span class="glyph">E</span> EduDB <span class="pill">Preview</span></div>
+    <nav class="main"><a href="index.html">Dashboard</a><a href="progress.html">Progress</a><a href="myattempts.html">My attempts</a><a href="search.html">Search</a><a href="documents.html" class="active">Documents</a><a href="chart.html">Chart</a><a href="parquet.html">Parquet</a><a href="login.html">Sign in</a><span class="userchip">Teacher</span></nav>
+  </header>
+  <main>
+    <div class="screen-head"><h1>Documents</h1><span class="tag-preview">Static preview</span></div>
+    
+  <p class="sub">Create, read, update and delete question documents. Shown here: the current documents.</p>
+  <div class="panel">
+    <h2>Documents</h2>
+    <table><caption>Rendered example with synthetic data. Values do not change.</caption>
+      <thead><tr><th>ID</th><th>Question</th><th>Title</th><th>Updated</th></tr></thead>
+      <tbody><tr><td>1</td><td>Q3</td><td>GROUP BY worked example</td><td><code>2027-01-26 10:00:00</code></td></tr><tr><td>2</td><td>Q4</td><td>JOIN with Topic</td><td><code>2027-02-02 10:00:00</code></td></tr></tbody>
+    </table>
+    <p class="note">Example document content:</p>
+    <div class="mono">Q3 — GROUP BY worked example
+SELECT question_id, COUNT(is_correct) FILTER (WHERE is_correct) * 1.0 / COUNT(is_correct) AS rate FROM attempt GROUP BY question_id;</div><div class="mono">Q4 — JOIN with Topic
+SELECT t.topic_name, AVG(a.is_correct::int) FROM attempt a JOIN question q ON a.question_id = q.question_id JOIN topic t ON q.topic_id = t.topic_id GROUP BY t.topic_name;</div>
+  </div>
+  <div class="panel">
+    <h2>Add or edit a document</h2>
+    <div class="controls">
+      <input type="text" value="Question ID" disabled style="width:120px">
+      <input type="text" value="Title" disabled style="width:220px">
+      <button disabled>Save</button>
+      <span class="badge-only">Preview only</span>
+    </div>
+    <p class="note">The form is shown for layout only. Editing happens in the local application.</p>
+  </div>
+  </main>
+  <footer>EduDB — demonstration learning analytics application for INT4087. Static preview with synthetic data;
+  not the running application. Supabase and Firebase host databases in lesson 4; they do not run this application.</footer>
+</body>
+</html>

@@ -148,7 +148,9 @@ def search():  # F6 keyword and vector retrieval over excerpts
     if not qid:
         return render_template("search.html", excerpts=EXCERPTS, practice=PRACTICE, user=current_user())
     pq = next(p for p in PRACTICE if p["id"] == qid)
-    words = re.findall(r"[a-z]+", pq["text"].lower())
+    stop = {"to", "do", "how", "use", "by", "i", "a", "an", "the", "of", "for", "in", "on",
+            "and", "is", "are", "what", "why", "when", "with"}
+    words = [w for w in re.findall(r"[a-z]+", pq["text"].lower()) if len(w) > 1 and w not in stop]
     keyword = [e for e in EXCERPTS if any(w in e["excerpt_text"].lower() for w in words)]
     vector = sorted(EXCERPTS, key=lambda e: cosine(pq["vec"], e["vec"]), reverse=True)[:3]
     return render_template("search.html", pq=pq, keyword=keyword, vector=vector,
