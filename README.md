@@ -135,11 +135,15 @@ These steps assume you have Python 3.11+, Docker, and Git installed.
    ```
    Re-running this command resets the database to the sample data, so it is safe to run again.
 
-8. **Run the application:**
+8. **Run the application.** Keep the virtual environment active: your shell
+   prompt should show `(.venv)`. Then:
    ```
    flask run
    ```
-   Then open http://localhost:5000 in your browser.
+   If `(.venv)` is not shown, the command below would use your system Python
+   (for example Anaconda) and fail with `ModuleNotFoundError`. Activate first
+   with `source .venv/bin/activate`, or run the app directly with
+   `.venv/bin/flask run`. Then open http://localhost:5000 in your browser.
 
 Sign in as `Teacher` / `teacher123` (sees all rows) or `Learner 1` to `Learner 6` / `learner123`.
 
