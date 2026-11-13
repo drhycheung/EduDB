@@ -1,5 +1,7 @@
 # EduDB
 
+**Live demo (static preview):** https://drhycheung.github.io/EduDB/
+
 **Static preview (not the application).** A rendered copy of the screens is published with
 GitHub Pages. It shows fixed examples and connects to no database. The working application runs on
 your own computer with Docker. See "Run locally" below.
