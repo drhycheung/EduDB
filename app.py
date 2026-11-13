@@ -28,6 +28,12 @@ import duckdb       # reads the Parquet copy of the attempts table
 import psycopg      # connects to PostgreSQL
 from flask import (Flask, redirect, render_template, request, make_response)
 
+# Read settings from a ".env" file when one exists. This keeps the database
+# address and the secret key out of the code. python-dotenv is listed in
+# requirements.txt, so the import below works after "pip install".
+from dotenv import load_dotenv
+load_dotenv()  # fill os.environ from .env BEFORE we read DB_* and SECRET_KEY
+
 # Create the Flask application. Flask maps each @app.route below to a web page.
 app = Flask(__name__)
 

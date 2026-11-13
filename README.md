@@ -32,8 +32,8 @@ EduDB/
 ├── app.py                  # Flask application: one function per route, plain SQL, sessions
 ├── schema.sql              # CREATE TABLE statements for PostgreSQL
 ├── seed.py                 # Reads data/*.csv and loads PostgreSQL; also writes attempts.parquet
-├── requirements.txt        # Python packages: Flask, psycopg, duckdb
-├── .env.example            # Template for DATABASE_URL and SECRET_KEY
+├── requirements.txt        # Python packages: Flask, psycopg, duckdb, python-dotenv
+├── .env.example            # Template for DB_* settings and SECRET_KEY
 ├── docker-compose.yml      # Starts the PostgreSQL container
 ├── data/                   # Synthetic source data (CSV and JSON)
 │   ├── Student.csv         # 6 learners
@@ -89,12 +89,56 @@ the templates. This order follows the data from the table definition to the scre
 
 ## Run locally
 
-1. `docker compose up -d` (starts PostgreSQL)
-2. `python3 -m venv .venv && source .venv/bin/activate`
-3. `pip install -r requirements.txt`
-4. Copy `.env.example` to `.env` and set a random `SECRET_KEY`
-5. `python3 seed.py`
-6. `flask run`, then open http://localhost:5000
+These steps assume you have Python 3.11+, Docker, and Git installed.
+
+1. **Get the code.** If you have the online repository, clone it, then enter the folder:
+   ```
+   git clone https://github.com/drhycheung/EduDB.git
+   cd EduDB
+   ```
+   If you already downloaded the folder another way, just open a terminal inside it.
+
+2. **Create and enter a virtual environment** so the packages do not affect your system:
+   ```
+   python3 -m venv .venv && source .venv/bin/activate
+   ```
+
+3. **Install the Python packages** listed in requirements.txt:
+   ```
+   pip install -r requirements.txt
+   ```
+   This installs Flask, psycopg, duckdb and python-dotenv. Run this again if you add a package.
+
+4. **Create your settings file** by copying the template:
+   ```
+   cp .env.example .env
+   ```
+   The new `.env` is private and is never committed. It holds your database address and secret key.
+
+5. **Set a strong secret key.** Run this command and copy the long string it prints:
+   ```
+   python3 -c "import secrets; print(secrets.token_hex(32))"
+   ```
+   Open `.env` in a text editor and replace `SECRET_KEY=change-me-to-a-random-string`
+   with `SECRET_KEY=` followed by the string you copied. The key signs the session
+   cookie; any random 32-byte value is fine for local use.
+
+6. **Start PostgreSQL** in the background:
+   ```
+   docker compose up -d
+   ```
+   Wait a few seconds for the database to finish starting.
+
+7. **Load the sample data** into PostgreSQL:
+   ```
+   python3 seed.py
+   ```
+
+8. **Run the application:**
+   ```
+   flask run
+   ```
+   Then open http://localhost:5000 in your browser.
 
 Sign in as `Teacher` / `teacher123` (sees all rows) or `Learner 1` to `Learner 6` / `learner123`.
 
