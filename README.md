@@ -116,29 +116,23 @@ These steps assume you have Python 3.11+, Docker, and Git installed.
    ```
    cp .env.example .env
    ```
-   The new `.env` is private and is never committed.
+   The new `.env` is private and is never committed. It already contains a
+   working `SECRET_KEY` for local use, so you do not need to edit it. See the
+   Deployment note for how to set a strong key before any real deployment.
 
-5. **Set a secret key.** Run this command; it prints a line you can paste into `.env`:
-   ```
-   python3 -c "import secrets; print('SECRET_KEY=' + secrets.token_hex(32))"
-   ```
-   Copy the printed `SECRET_KEY=...` line and paste it into `.env` (replacing the
-   sample value). The key signs the session cookie; any random 32-byte value is
-   fine for local use.
-
-6. **Start PostgreSQL** in the background:
+5. **Start PostgreSQL** in the background:
    ```
    docker compose up -d
    ```
    Wait a few seconds for the database to finish starting.
 
-7. **Load the sample data** into PostgreSQL:
+6. **Load the sample data** into PostgreSQL:
    ```
    python3 seed.py
    ```
    Re-running this command resets the database to the sample data, so it is safe to run again.
 
-8. **Run the application.** Keep the virtual environment active: your shell
+7. **Run the application.** Keep the virtual environment active: your shell
    prompt should show `(.venv)`. Then:
    ```
    flask run
@@ -153,8 +147,9 @@ Sign in as `Teacher` / `teacher123` (sees all rows) or `Learner 1` to `Learner 6
 ### All commands in one block
 
 Copy and paste the block below in order (macOS / Linux). It performs every step above.
-After step 5, open `.env` and paste the printed `SECRET_KEY=...` line (the command prints it for you).
-On Windows, replace `source .venv/bin/activate` with `.venv\Scripts\activate`.
+The `.env` created by `cp .env.example .env` already has a working `SECRET_KEY`,
+so no extra editing is needed. On Windows, replace `source .venv/bin/activate`
+with `.venv\Scripts\activate`.
 
 ```bash
 git clone https://github.com/drhycheung/EduDB.git
@@ -163,7 +158,6 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
-python3 -c "import secrets; print('SECRET_KEY=' + secrets.token_hex(32))"   # paste the printed line into .env
 docker compose up -d
 python3 seed.py
 flask run
@@ -199,6 +193,17 @@ This repository holds a local application and a labelled static preview. A real 
 a production server, a secret store, a reverse proxy and a persistent database. That is documented in
 `EduDB-planning.md` and is not part of the course. Supabase and Firebase host databases in L04; they
 do not run this Flask application.
+
+**Secret key for real deployment.** The `.env` file already contains a default `SECRET_KEY` that is
+safe for local teaching only. Before any public or shared deployment, replace it with a strong random
+value and keep that value private:
+
+```
+python3 -c "import secrets; print(secrets.token_hex(32))"
+```
+
+Copy the printed string into `.env` as `SECRET_KEY=...`. Anyone who learns this value could forge
+sessions, so never reuse the sample value and never commit the real key.
 
 ## Licence
 
