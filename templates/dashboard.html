@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% set title = "Dashboard" %}
+{% block body %}
+  <h2>Correct-answer rate by question</h2>
+  <table>
+    <tr><th>Question</th><th>Rate</th></tr>
+    {% for qid, rate in q_rates %}
+      <tr><td>Q{{ qid }}</td><td>{% if rate is none %}—{% else %}{{ "{:.1f}%".format(rate * 100) }}{% endif %}</td></tr>
+    {% endfor %}
+  </table>
+
+  <h2>Correct-answer rate by topic</h2>
+  <table>
+    <tr><th>Topic</th><th>Rate</th></tr>
+    {% for name, rate in t_rates %}
+      <tr><td>{{ name }}</td><td>{% if rate is none %}—{% else %}{{ "{:.1f}%".format(rate * 100) }}{% endif %}</td></tr>
+    {% endfor %}
+  </table>
+  <p class="note">Rates divide by answered attempts (COUNT(is_correct)), so a skipped question is not a wrong answer.</p>
+{% endblock %}

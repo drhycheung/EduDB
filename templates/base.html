@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>EduDB — {{ title }}</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; color: #222; }
+    nav a { margin-right: 0.9rem; font-size: 0.9rem; }
+    h1 { font-size: 1.3rem; }
+    table { border-collapse: collapse; margin-top: 1rem; }
+    th, td { border: 1px solid #999; padding: 0.35rem 0.7rem; text-align: left; }
+    th { background: #eef; }
+    .bar { background: #4a78c2; height: 1.2rem; }
+    .note { color: #555; font-size: 0.85rem; }
+    form { margin: 0.5rem 0; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/">Dashboard</a>
+    <a href="/progress">Progress</a>
+    <a href="/student">My attempts</a>
+    <a href="/search">Search</a>
+    <a href="/documents">Documents</a>
+    <a href="/chart">Chart</a>
+    <a href="/parquet">Parquet</a>
+    {% if user %}<a href="/logout">Sign out ({{ user.name }})</a>{% else %}<a href="/login">Sign in</a>{% endif %}
+  </nav>
+  <h1>{{ title }}</h1>
+  {% block body %}{% endblock %}
+</body>
+</html>

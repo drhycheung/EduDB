@@ -1,0 +1,16 @@
+[
+  {
+    "doc_id": 1,
+    "question_id": 3,
+    "title": "GROUP BY worked example",
+    "body": "SELECT question_id, COUNT(is_correct) FILTER (WHERE is_correct) * 1.0 / COUNT(is_correct) AS rate FROM attempt GROUP BY question_id;",
+    "updated_at": "2027-01-26 10:00:00"
+  },
+  {
+    "doc_id": 2,
+    "question_id": 4,
+    "title": "JOIN with Topic",
+    "body": "SELECT t.topic_name, AVG(a.is_correct::int) FROM attempt a JOIN question q ON a.question_id = q.question_id JOIN topic t ON q.topic_id = t.topic_id GROUP BY t.topic_name;",
+    "updated_at": "2027-02-02 10:00:00"
+  }
+]

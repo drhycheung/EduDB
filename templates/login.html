@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% set title = "Sign in" %}
+{% block body %}
+  <form method="post">
+    <p>Teacher: username <code>Teacher</code>, password <code>teacher123</code></p>
+    <p>Learner: username <code>Learner 1</code> to <code>Learner 6</code>, password <code>learner123</code></p>
+    <label>Username <input name="username"></label><br>
+    <label>Password <input name="password" type="password"></label><br>
+    <button type="submit">Sign in</button>
+  </form>
+{% endblock %}

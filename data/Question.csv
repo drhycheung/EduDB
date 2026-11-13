@@ -1,0 +1,7 @@
+question_id,quiz_id,topic_id,question_text
+1,1,1,Identify the entities in a quiz result.
+2,1,1,Define the primary key of the attempt table.
+3,1,2,Write a GROUP BY query for the correct-answer rate.
+4,2,2,Join Question and Topic to report by topic.
+5,2,3,Store a quiz document in a document database.
+6,2,3,Explain how a similarity search finds related material.

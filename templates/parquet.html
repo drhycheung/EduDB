@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% set title = "Parquet check" %}
+{% block body %}
+  <p>Overall correct-answer rate read from <code>data/attempts.parquet</code> with DuckDB:</p>
+  <p><b>{{ "{:.1f}%".format(rate * 100) }}</b></p>
+  <p class="note">The same number appears on the dashboard, but here the source is a Parquet file, not the live database.</p>
+{% endblock %}

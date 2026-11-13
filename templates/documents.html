@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% set title = "Question documents" %}
+{% block body %}
+  <h2>Documents</h2>
+  <table>
+    <tr><th>Id</th><th>Question</th><th>Title</th><th>Body</th><th>Updated</th><th></th></tr>
+    {% for d in docs %}
+      <tr>
+        <td>{{ d.doc_id }}</td><td>Q{{ d.question_id }}</td><td>{{ d.title }}</td>
+        <td><code>{{ d.body }}</code></td><td>{{ d.updated_at }}</td>
+        <td>
+          <form method="post" style="display:inline">
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="doc_id" value="{{ d.doc_id }}">
+            <button type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  <h2>Create or update</h2>
+  <form method="post">
+    <input type="hidden" name="action" value="create">
+    Question <input name="question_id" size="3">
+    Title <input name="title" size="20">
+    Body <input name="body" size="40">
+    <button type="submit">Save</button>
+  </form>
+{% endblock %}

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>EduDB — static preview (not the running application)</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; color: #222; max-width: 760px; }
+    .banner { background: #fff3cd; border: 1px solid #d39e00; padding: 0.8rem 1rem; border-radius: 4px; }
+    .banner b { color: #7a4f00; }
+    h1 { font-size: 1.3rem; }
+    h2 { font-size: 1.05rem; margin-top: 2rem; }
+    table { border-collapse: collapse; margin-top: 0.6rem; }
+    th, td { border: 1px solid #999; padding: 0.35rem 0.7rem; text-align: left; }
+    th { background: #eef; }
+    .bar { background: #4a78c2; height: 1.2rem; }
+    .note { color: #555; font-size: 0.85rem; font-style: italic; }
+    select, button { color: #888; }
+    code { background: #f4f4f4; padding: 0 3px; }
+  </style>
+</head>
+<body>
+  <div class="banner">
+    <b>Static preview. This is not the running application.</b><br>
+    This page shows fixed copies of the EduDB screens. No database is connected. The sign-in form,
+    the topic selector and the search box do not work here. The working application runs on your own
+    computer with Docker. Read the README for the setup steps.
+  </div>
+
+  <h1>EduDB — demonstration learning analytics application</h1>
+  <p class="note">Rendered example with synthetic data. Values do not change.</p>
+
+  <h2>Screen 1 — Dashboard (teacher view)</h2>
+  <p>Correct-answer rate by question</p>
+  <table>
+    <caption>Rendered example with synthetic data. Values do not change.</caption>
+    <tr><th>Question</th><th>Rate</th></tr>
+    <tr><td>Q1</td><td>66.7%</td></tr>
+    <tr><td>Q2</td><td>66.7%</td></tr>
+    <tr><td>Q3</td><td>50.0%</td></tr>
+    <tr><td>Q4</td><td>80.0%</td></tr>
+    <tr><td>Q5</td><td>50.0%</td></tr>
+    <tr><td>Q6</td><td>66.7%</td></tr>
+  </table>
+  <p>Correct-answer rate by topic</p>
+  <table>
+    <caption>Rendered example with synthetic data. Values do not change.</caption>
+    <tr><th>Topic</th><th>Rate</th></tr>
+    <tr><td>Database design</td><td>66.7%</td></tr>
+    <tr><td>SQL queries</td><td>63.6%</td></tr>
+    <tr><td>NoSQL and vectors</td><td>58.3%</td></tr>
+  </table>
+
+  <h2>Screen 2 — My attempts (Learner 3)</h2>
+  <table>
+    <caption>Rendered example with synthetic data. Values do not change.</caption>
+    <tr><th>Question</th><th>Result</th></tr>
+    <tr><td>Q1</td><td>Wrong</td></tr>
+    <tr><td>Q2</td><td>Correct</td></tr>
+    <tr><td>Q3</td><td>Wrong</td></tr>
+    <tr><td>Q4</td><td>Skipped</td></tr>
+    <tr><td>Q5</td><td>Correct</td></tr>
+    <tr><td>Q6</td><td>Wrong</td></tr>
+  </table>
+  <p>Overall rate: 40.0%</p>
+
+  <h2>Screen 3 — Search</h2>
+  <p>
+    <label>Practice question:
+      <select disabled><option>How do I use GROUP BY to count correct answers?</option></select>
+    </label>
+    <button disabled>Search (Preview only)</button>
+  </p>
+  <p>Keyword results</p>
+  <ul>
+    <li><b>SQL queries</b>: GROUP BY groups rows before aggregation, so COUNT counts each group once.</li>
+  </ul>
+  <p>Vector (semantic) results</p>
+  <ol>
+    <li><b>SQL queries</b>: GROUP BY groups rows before aggregation, so COUNT counts each group once.</li>
+    <li><b>SQL queries</b>: A JOIN combines rows from two tables on a shared key; a missing condition multiplies rows.</li>
+    <li><b>Database design</b>: Normalisation removes repeating groups and places each fact in one table.</li>
+  </ol>
+  <p class="note">Vectors are hand-authored for teaching. A real system uses an embedding model.</p>
+
+  <h2>Screen 4 — Interactive chart (L09, topic: Database design)</h2>
+  <p>
+    <label>Topic:
+      <select disabled><option>Database design</option></select>
+    </label>
+    <button disabled>Show chart (Preview only)</button>
+  </p>
+  <p>Q1: 66.7%</p>
+  <div class="bar" style="width: 66.7%"></div>
+  <p>Q2: 66.7%</p>
+  <div class="bar" style="width: 66.7%"></div>
+  <p class="note">The server draws the bars from one aggregation query. No JavaScript runs in the browser.</p>
+</body>
+</html>

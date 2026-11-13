@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% set title = "Interactive chart" %}
+{% block body %}
+  <form method="post">
+    <label>Topic:
+      <select name="topic_id">
+        {% for tid, tname in topics %}<option value="{{ tid }}" {% if tid == topic %}selected{% endif %}>{{ tname }}</option>{% endfor %}
+      </select>
+    </label>
+    <button type="submit">Show chart</button>
+  </form>
+
+  <h2>Correct-answer rate by question (topic {{ topic }})</h2>
+  {% for qid, rate in rows %}
+    <div>Q{{ qid }}: {{ "{:.1f}%".format(rate * 100) if rate is not none else "—" }}</div>
+    <div class="bar" style="width: {{ (rate * 100) if rate else 0 }}%"></div>
+  {% endfor %}
+  <p class="note">The server draws the bars from one aggregation query. No JavaScript runs in the browser.</p>
+{% endblock %}

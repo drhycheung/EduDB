@@ -1,0 +1,27 @@
+# EduDB local stack. One command starts the database:
+#   docker compose up -d
+# Then: pip install -r requirements.txt && python3 seed.py && flask run
+# F7 (documents) uses a JSON file by default (data/documents.json). To use MongoDB
+# instead, add the commented service and point F7 at it; see the README.
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: edudb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - edudb-data:/var/lib/postgresql/data
+
+#  mongo:
+#    image: mongo:7
+#    ports:
+#      - "27017:27017"
+#    volumes:
+#      - edudb-mongo:/data/db
+
+volumes:
+  edudb-data:
+#  edudb-mongo:

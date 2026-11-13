@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% set title = "Progress" %}
+{% block body %}
+  <h2>Quiz 1 and quiz 2 rate per learner</h2>
+  <table>
+    <tr><th>Learner</th><th>Quiz 1</th><th>Quiz 2</th></tr>
+    {% for name, q1, q2 in rows %}
+      <tr>
+        <td>{{ name }}</td>
+        <td>{% if q1 is none %}—{% else %}{{ "{:.1f}%".format(q1 * 100) }}{% endif %}</td>
+        <td>{% if q2 is none %}—{% else %}{{ "{:.1f}%".format(q2 * 100) }}{% endif %}</td>
+      </tr>
+    {% endfor %}
+  </table>
+  <p class="note">AVG ignores skipped attempts, so each quiz rate divides by the attempts the learner answered.</p>
+{% endblock %}

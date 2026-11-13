@@ -1,0 +1,6 @@
+excerpt_id,topic,excerpt_text,v1,v2,v3,v4,v5,v6,v7,v8
+1,Database design,Normalisation removes repeating groups and places each fact in one table.,0.9,0.6,0.3,0.2,0.1,0.4,0.5,0.2
+2,SQL queries,"GROUP BY groups rows before aggregation, so COUNT counts each group once.",0.3,0.9,0.8,0.1,0.2,0.1,0.5,0.2
+3,Database design,A primary key uniquely identifies each row and cannot be null.,0.9,0.2,0.3,0.5,0.1,0.2,0.3,0.3
+4,SQL queries,A JOIN combines rows from two tables on a shared key; a missing condition multiplies rows.,0.4,0.8,0.4,0.7,0.1,0.1,0.6,0.2
+5,NoSQL and vectors,"An index speeds up lookup, and a vector index supports similarity search.",0.7,0.3,0.3,0.2,0.1,0.8,0.4,0.2

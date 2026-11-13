@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% set title = "My attempts" %}
+{% block body %}
+  {% if user.role == "teacher" %}
+    <p>Teacher view: every learner's attempts.</p>
+    <table>
+      <tr><th>Learner</th><th>Question</th><th>Result</th></tr>
+      {% for name, qid, correct in rows %}
+        <tr><td>{{ name }}</td><td>Q{{ qid }}</td>
+          <td>{% if correct is none %}Skipped{% elif correct %}Correct{% else %}Wrong{% endif %}</td></tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>{{ user.name }}: your six attempts and your rate.</p>
+    <table>
+      <tr><th>Question</th><th>Result</th></tr>
+      {% for qid, correct in rows %}
+        <tr><td>Q{{ qid }}</td>
+          <td>{% if correct is none %}Skipped{% elif correct %}Correct{% else %}Wrong{% endif %}</td></tr>
+      {% endfor %}
+    </table>
+    <p>Overall rate: {% if rate is none %}—{% else %}{{ "{:.1f}%".format(rate * 100) }}{% endif %}</p>
+  {% endif %}
+{% endblock %}
