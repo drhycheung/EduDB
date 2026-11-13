@@ -1,5 +1,15 @@
 -- EduDB schema: seven tables for a learning analytics demonstration.
--- Run once with seed.py. Every column has a plain-language meaning in class.
+-- Run with seed.py. Every column has a plain-language meaning in class.
+-- The DROP statements below let seed.py run more than once: each run removes
+-- the old tables and reloads the synthetic data from scratch.
+
+DROP TABLE IF EXISTS attempt CASCADE;
+DROP TABLE IF EXISTS question CASCADE;
+DROP TABLE IF EXISTS quiz CASCADE;
+DROP TABLE IF EXISTS enrolment CASCADE;
+DROP TABLE IF EXISTS topic CASCADE;
+DROP TABLE IF EXISTS course CASCADE;
+DROP TABLE IF EXISTS student CASCADE;
 
 CREATE TABLE student (
     student_id    INTEGER PRIMARY KEY,

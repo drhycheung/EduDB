@@ -133,6 +133,7 @@ These steps assume you have Python 3.11+, Docker, and Git installed.
    ```
    python3 seed.py
    ```
+   Re-running this command resets the database to the sample data, so it is safe to run again.
 
 8. **Run the application:**
    ```
