@@ -91,12 +91,12 @@ the templates. This order follows the data from the table definition to the scre
 
 These steps assume you have Python 3.11+, Docker, and Git installed.
 
-1. **Get the code.** If you have the online repository, clone it, then enter the folder:
+1. **Get the code.** Clone the repository, then enter the folder:
    ```
    git clone https://github.com/drhycheung/EduDB.git
    cd EduDB
    ```
-   If you already downloaded the folder another way, just open a terminal inside it.
+   If you already have the folder, open a terminal inside it.
 
 2. **Create and enter a virtual environment** so the packages do not affect your system:
    ```
@@ -107,21 +107,21 @@ These steps assume you have Python 3.11+, Docker, and Git installed.
    ```
    pip install -r requirements.txt
    ```
-   This installs Flask, psycopg, duckdb and python-dotenv. Run this again if you add a package.
+   This installs Flask, psycopg, duckdb and python-dotenv.
 
 4. **Create your settings file** by copying the template:
    ```
    cp .env.example .env
    ```
-   The new `.env` is private and is never committed. It holds your database address and secret key.
+   The new `.env` is private and is never committed.
 
-5. **Set a strong secret key.** Run this command and copy the long string it prints:
+5. **Set a secret key.** Run this command; it prints a line you can paste into `.env`:
    ```
-   python3 -c "import secrets; print(secrets.token_hex(32))"
+   python3 -c "import secrets; print('SECRET_KEY=' + secrets.token_hex(32))"
    ```
-   Open `.env` in a text editor and replace `SECRET_KEY=change-me-to-a-random-string`
-   with `SECRET_KEY=` followed by the string you copied. The key signs the session
-   cookie; any random 32-byte value is fine for local use.
+   Copy the printed `SECRET_KEY=...` line and paste it into `.env` (replacing the
+   sample value). The key signs the session cookie; any random 32-byte value is
+   fine for local use.
 
 6. **Start PostgreSQL** in the background:
    ```
@@ -140,12 +140,30 @@ These steps assume you have Python 3.11+, Docker, and Git installed.
    ```
    flask run
    ```
-   If `(.venv)` is not shown, the command below would use your system Python
+   If `(.venv)` is not shown, the command would use your system Python
    (for example Anaconda) and fail with `ModuleNotFoundError`. Activate first
    with `source .venv/bin/activate`, or run the app directly with
    `.venv/bin/flask run`. Then open http://localhost:5000 in your browser.
 
 Sign in as `Teacher` / `teacher123` (sees all rows) or `Learner 1` to `Learner 6` / `learner123`.
+
+### All commands in one block
+
+Copy and paste the block below in order (macOS / Linux). It performs every step above.
+After step 5, open `.env` and paste the printed `SECRET_KEY=...` line (the command prints it for you).
+On Windows, replace `source .venv/bin/activate` with `.venv\Scripts\activate`.
+
+```bash
+git clone https://github.com/drhycheung/EduDB.git
+cd EduDB
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+python3 -c "import secrets; print('SECRET_KEY=' + secrets.token_hex(32))"   # paste the printed line into .env
+docker compose up -d
+python3 seed.py
+flask run
+```
 
 ## Data
 

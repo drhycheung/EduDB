@@ -1,20 +1,54 @@
 {% extends "base.html" %}
 {% set title = "Dashboard" %}
 {% block body %}
-  <h2>Correct-answer rate by question</h2>
-  <table>
-    <tr><th>Question</th><th>Rate</th></tr>
-    {% for qid, rate in q_rates %}
-      <tr><td>Q{{ qid }}</td><td>{% if rate is none %}—{% else %}{{ "{:.1f}%".format(rate * 100) }}{% endif %}</td></tr>
-    {% endfor %}
-  </table>
+  <div class="cards">
+    <div class="kpi"><div class="n">{{ q_rates|length }}</div><div class="l">Questions</div></div>
+    <div class="kpi"><div class="n">{{ t_rates|length }}</div><div class="l">Topics</div></div>
+    <div class="kpi"><div class="n">6</div><div class="l">Learners</div></div>
+    <div class="kpi"><div class="n">36</div><div class="l">Attempts</div></div>
+  </div>
 
-  <h2>Correct-answer rate by topic</h2>
-  <table>
-    <tr><th>Topic</th><th>Rate</th></tr>
-    {% for name, rate in t_rates %}
-      <tr><td>{{ name }}</td><td>{% if rate is none %}—{% else %}{{ "{:.1f}%".format(rate * 100) }}{% endif %}</td></tr>
-    {% endfor %}
-  </table>
+  <div class="panel">
+    <h2>Correct-answer rate by question</h2>
+    <table>
+      <thead><tr><th>Question</th><th>Rate</th><th style="width:45%">Distribution</th></tr></thead>
+      <tbody>
+      {% for qid, rate in q_rates %}
+        <tr>
+          <td>Q{{ qid }}</td>
+          <td>{% if rate is none %}—{% else %}{{ "{:.1f}%".format(rate * 100) }}{% endif %}</td>
+          <td>
+            <div class="ratebar">
+              <div class="track"><div class="fill" style="width: {% if rate is none %}0{% else %}{{ "{:.1f}".format(rate * 100) }}{% endif %}%"></div></div>
+              <span class="pct">{% if rate is none %}—{% else %}{{ "{:.1f}%".format(rate * 100) }}{% endif %}</span>
+            </div>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h2>Correct-answer rate by topic</h2>
+    <table>
+      <thead><tr><th>Topic</th><th>Rate</th><th style="width:45%">Distribution</th></tr></thead>
+      <tbody>
+      {% for name, rate in t_rates %}
+        <tr>
+          <td>{{ name }}</td>
+          <td>{% if rate is none %}—{% else %}{{ "{:.1f}%".format(rate * 100) }}{% endif %}</td>
+          <td>
+            <div class="ratebar">
+              <div class="track"><div class="fill" style="width: {% if rate is none %}0{% else %}{{ "{:.1f}".format(rate * 100) }}{% endif %}%"></div></div>
+              <span class="pct">{% if rate is none %}—{% else %}{{ "{:.1f}%".format(rate * 100) }}{% endif %}</span>
+            </div>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
   <p class="note">Rates divide by answered attempts (COUNT(is_correct)), so a skipped question is not a wrong answer.</p>
 {% endblock %}
