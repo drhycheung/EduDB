@@ -18,7 +18,7 @@ enough to read line by line in class.
 - F4 My attempts: a learner sees own rows; a teacher sees all rows
 - F5 Sign-in and roles: two accounts, one password hash check, in-memory sessions
 - F6 Search: keyword and vector (semantic) retrieval over teaching-material excerpts
-- F7 Documents: create, read, update, delete on question documents
+- F7 Question bank: create, read, update, delete teaching notes on the questions
 - F8 Chart: an interactive bar chart drawn on the server (no JavaScript)
 - F9 Parquet check: the same rate read from a Parquet file with DuckDB
 
@@ -44,7 +44,7 @@ EduDB/
 │   ├── Question.csv        # 6 questions
 │   ├── Attempt.csv         # 36 attempts (one empty value means the learner skipped)
 │   ├── excerpts.csv        # 5 teaching excerpts, each with an 8-dimension vector
-│   └── documents.json      # question documents used by the Documents feature
+│   └── documents.json      # teaching notes used by the Question bank feature
 ├── templates/              # Server-rendered HTML pages (no JavaScript)
 │   ├── base.html           # Shared layout: header and navigation
 │   ├── dashboard.html      # F1-F2: rate by question and by topic

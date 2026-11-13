@@ -108,14 +108,16 @@ def load_excerpts():
 EXCERPTS = load_excerpts()
 
 # Three practice questions used by the search screen. Each has a hand-written
-# vector that points toward the kind of document it should match.
+# vector that points toward the kind of note it should match. The questions are
+# about school maths so students see clearly that this is sample data, not the
+# database material of the course.
 PRACTICE = [
-    {"id": 1, "text": "How do I use GROUP BY to count correct answers?",
-     "vec": [0.2, 0.9, 0.8, 0.1, 0.2, 0.1, 0.5, 0.2]},
-    {"id": 2, "text": "What is a primary key?",
-     "vec": [0.9, 0.2, 0.3, 0.5, 0.1, 0.2, 0.3, 0.3]},
-    {"id": 3, "text": "Why does my JOIN return too many rows?",
-     "vec": [0.3, 0.7, 0.4, 0.8, 0.1, 0.1, 0.6, 0.2]},
+    {"id": 1, "text": "How do I find the unit price of apples?",
+     "vec": [0.9, 0.2, 0.3, 0.1, 0.2, 0.1, 0.5, 0.2]},
+    {"id": 2, "text": "How do I solve a linear equation?",
+     "vec": [0.2, 0.9, 0.3, 0.1, 0.2, 0.1, 0.5, 0.2]},
+    {"id": 3, "text": "How do I add fractions?",
+     "vec": [0.3, 0.2, 0.9, 0.1, 0.2, 0.1, 0.5, 0.2]},
 ]
 
 
@@ -159,16 +161,30 @@ def dashboard():  # F1 rate by question, F2 rate by topic
 
 @app.route("/progress")
 def progress():  # F3 progress per learner (window over quizzes)
+    # A learner sees only their own row. A teacher sees every learner, so they
+    # can spot who needs help. This is the same data, filtered by role.
+    user = current_user()
+    if not user:
+        return redirect("/login")
     conn = get_conn()
     # Show each learner's success rate on quiz 1 and on quiz 2 side by side.
     # AVG(CASE WHEN ...) picks the attempts for one quiz, else ignores them.
     # This is the SQL way to build a small pivot table without a chart library.
+    if user["role"] == "teacher":
+        rows = conn.execute("SELECT s.display_name, AVG(CASE WHEN q.quiz_id = 1 THEN a.is_correct::int END) AS q1, "
+                            "AVG(CASE WHEN q.quiz_id = 2 THEN a.is_correct::int END) AS q2 FROM student s "
+                            "JOIN attempt a ON a.student_id = s.student_id JOIN question q ON q.question_id = a.question_id "
+                            "GROUP BY s.display_name ORDER BY s.display_name").fetchall()
+        conn.close()
+        return render_template("progress.html", rows=rows, user=user, teacher=True)
+    # A learner sees only their own attempt window. The %s keeps the id out of
+    # the SQL text, which prevents SQL injection.
     rows = conn.execute("SELECT s.display_name, AVG(CASE WHEN q.quiz_id = 1 THEN a.is_correct::int END) AS q1, "
                         "AVG(CASE WHEN q.quiz_id = 2 THEN a.is_correct::int END) AS q2 FROM student s "
                         "JOIN attempt a ON a.student_id = s.student_id JOIN question q ON q.question_id = a.question_id "
-                        "GROUP BY s.display_name ORDER BY s.display_name").fetchall()
+                        "WHERE s.student_id = %s GROUP BY s.display_name", [user["user_id"]]).fetchall()
     conn.close()
-    return render_template("progress.html", rows=rows, user=current_user())
+    return render_template("progress.html", rows=rows, user=user, teacher=False)
 
 
 @app.route("/student")
@@ -276,8 +292,16 @@ def save_docs(docs):
 
 @app.route("/documents", methods=["GET", "POST"])
 def documents():  # F7 create, read, update, delete on question documents
+    # Only a signed-in user may open this page. Teachers may edit the notes;
+    # learners may read them. This keeps the editor away from learners.
+    user = current_user()
+    if not user:
+        return redirect("/login")
     docs = load_docs()
     if request.method == "POST":
+        # Only a teacher may change the notes. A learner's POST is ignored.
+        if user["role"] != "teacher":
+            return redirect("/documents")
         # The form tells us which of the four actions to perform.
         action = request.form.get("action")
         if action == "create":
@@ -300,7 +324,7 @@ def documents():  # F7 create, read, update, delete on question documents
         # After a change, show the page again with the updated list.
         return redirect("/documents")
     # GET request: show the current list of documents.
-    return render_template("documents.html", docs=docs, user=current_user())
+    return render_template("documents.html", docs=docs, user=user, teacher=(user["role"] == "teacher"))
 
 
 @app.route("/chart", methods=["GET", "POST"])

@@ -1,16 +1,28 @@
 {% extends "base.html" %}
 {% set title = "Progress" %}
 {% block body %}
-  <h2>Quiz 1 and quiz 2 rate per learner</h2>
-  <table>
-    <tr><th>Learner</th><th>Quiz 1</th><th>Quiz 2</th></tr>
-    {% for name, q1, q2 in rows %}
-      <tr>
-        <td>{{ name }}</td>
-        <td>{% if q1 is none %}—{% else %}{{ "{:.1f}%".format(q1 * 100) }}{% endif %}</td>
-        <td>{% if q2 is none %}—{% else %}{{ "{:.1f}%".format(q2 * 100) }}{% endif %}</td>
-      </tr>
-    {% endfor %}
-  </table>
-  <p class="note">AVG ignores skipped attempts, so each quiz rate divides by the attempts the learner answered.</p>
+  <div class="panel">
+    <h2>Quiz progress</h2>
+    {% if not teacher %}
+      <p class="sub">Your own success rate on each quiz. Your teacher can see every learner.</p>
+    {% else %}
+      <p class="sub">Each learner's success rate on quiz 1 and quiz 2.</p>
+    {% endif %}
+    <table>
+      <caption>Synthetic data. Rates divide correct answers by answered attempts.</caption>
+      <thead><tr><th>Learner</th><th>Quiz 1 rate</th><th>Quiz 2 rate</th></tr></thead>
+      <tbody>
+      {% for name, q1, q2 in rows %}
+        <tr>
+          <td>{{ name }}</td>
+          <td>{% if q1 is none %}—{% else %}{{ "{:.1f}%".format(q1 * 100) }}{% endif %}</td>
+          <td>{% if q2 is none %}—{% else %}{{ "{:.1f}%".format(q2 * 100) }}{% endif %}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% if not teacher %}
+      <p class="note">You see only your own row. This is the same table your teacher uses to find who needs help.</p>
+    {% endif %}
+  </div>
 {% endblock %}

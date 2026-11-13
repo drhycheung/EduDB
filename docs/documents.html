@@ -83,23 +83,23 @@
     <div class="brand"><span class="glyph">E</span> EduDB <span class="pill">Preview</span></div>
     <nav class="main"><a href="index.html">Dashboard</a><a href="progress.html">Progress</a><a href="myattempts.html">My attempts</a><a href="search.html">Search</a><a href="documents.html" class="active">Documents</a><a href="chart.html">Chart</a><a href="parquet.html">Parquet</a><a href="login.html">Sign in</a><span class="userchip">Teacher</span></nav>
   </header>
-  <main>
-    <div class="screen-head"><h1>Documents</h1><span class="tag-preview">Static preview</span></div>
+    <main>
+    <div class="screen-head"><h1>Question bank</h1><span class="tag-preview">Static preview</span></div>
     
-  <p class="sub">Create, read, update and delete question documents. Shown here: the current documents.</p>
+  <p class="sub">The questions learners answered. Teachers can add a teaching note to any question. Shown here: the current notes.</p>
   <div class="panel">
-    <h2>Documents</h2>
+    <h2>Question bank</h2>
     <table><caption>Rendered example with synthetic data. Values do not change.</caption>
       <thead><tr><th>ID</th><th>Question</th><th>Title</th><th>Updated</th></tr></thead>
-      <tbody><tr><td>1</td><td>Q3</td><td>GROUP BY worked example</td><td><code>2027-01-26 10:00:00</code></td></tr><tr><td>2</td><td>Q4</td><td>JOIN with Topic</td><td><code>2027-02-02 10:00:00</code></td></tr></tbody>
+      <tbody><tr><td>1</td><td>Q3</td><td>Solving 2x + 3 = 11</td><td><code>2027-01-26 10:00:00</code></td></tr><tr><td>2</td><td>Q5</td><td>Rectangle area</td><td><code>2027-02-02 10:00:00</code></td></tr></tbody>
     </table>
-    <p class="note">Example document content:</p>
-    <div class="mono">Q3 — GROUP BY worked example
-SELECT question_id, COUNT(is_correct) FILTER (WHERE is_correct) * 1.0 / COUNT(is_correct) AS rate FROM attempt GROUP BY question_id;</div><div class="mono">Q4 — JOIN with Topic
-SELECT t.topic_name, AVG(a.is_correct::int) FROM attempt a JOIN question q ON a.question_id = q.question_id JOIN topic t ON q.topic_id = t.topic_id GROUP BY t.topic_name;</div>
+    <p class="note">Example note content:</p>
+    <div class="mono">Q3 — Solving 2x + 3 = 11
+Subtract 3 from both sides: 2x = 8. Divide by 2: x = 4.</div><div class="mono">Q5 — Rectangle area
+Area = length x width = 5 x 3 = 15 cm squared.</div>
   </div>
   <div class="panel">
-    <h2>Add or edit a document</h2>
+    <h2>Add or edit a note</h2>
     <div class="controls">
       <input type="text" value="Question ID" disabled style="width:120px">
       <input type="text" value="Title" disabled style="width:220px">

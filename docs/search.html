@@ -81,24 +81,24 @@
   <div class="banner"><b>Static preview. This is not the running application.</b>This page shows fixed copies of the EduDB screens. No database is connected. The sign-in form, the topic selector and the search box do not work here. The working application runs on your own computer with Docker. Read the README for the setup steps.</div>
   <header class="appbar">
     <div class="brand"><span class="glyph">E</span> EduDB <span class="pill">Preview</span></div>
-    <nav class="main"><a href="index.html">Dashboard</a><a href="progress.html">Progress</a><a href="myattempts.html">My attempts</a><a href="search.html" class="active">Search</a><a href="documents.html">Documents</a><a href="chart.html">Chart</a><a href="parquet.html">Parquet</a><a href="login.html">Sign in</a><span class="userchip">Teacher</span></nav>
+    <nav class="main"><a href="index.html">Dashboard</a><a href="progress.html">Progress</a><a href="myattempts.html">My attempts</a><a href="search.html" class="active">Search</a><a href="documents.html">Question bank</a><a href="chart.html">Chart</a><a href="parquet.html">Parquet</a><a href="login.html">Sign in</a><span class="userchip">Teacher</span></nav>
   </header>
-  <main>
+    <main>
     <div class="screen-head"><h1>Search</h1><span class="tag-preview">Static preview</span></div>
     
-  <p class="sub">Keyword and vector (semantic) retrieval over teaching-material excerpts.</p>
+  <p class="sub">Keyword and vector (semantic) retrieval over the teaching notes attached to the questions.</p>
   <div class="panel">
     <h2>Find material for a practice question</h2>
     <div class="controls">
-      <input type="text" value="How do I use GROUP BY to count correct answers?" disabled style="min-width:320px;max-width:60%">
+      <input type="text" value="How do I find the unit price of apples?" disabled style="min-width:320px;max-width:60%">
       <button disabled>Search</button>
       <span class="badge-only">Preview only</span>
     </div>
     <p class="note">The box above is an example query. The results below are the mockup output for that query.</p>
     <p><strong>Keyword results</strong></p>
-    <ul class="results"><li><span class="src">Database design:</span> Normalisation removes repeating groups and places each fact in one table.</li><li><span class="src">SQL queries:</span> GROUP BY groups rows before aggregation, so COUNT counts each group once.</li></ul>
+    <ul class="results"><li><span class="src">Arithmetic:</span> To find the cost of many items, divide the total by the pack size to get the unit price, then multiply by the number you want.</li><li><span class="src">Algebra:</span> To solve a linear equation, move the unknown terms to one side and the numbers to the other, then divide by the coefficient.</li></ul>
     <p><strong>Vector (semantic) results</strong></p>
-    <ol class="results"><li><span class="src">SQL queries:</span> GROUP BY groups rows before aggregation, so COUNT counts each group once.</li><li><span class="src">SQL queries:</span> A JOIN combines rows from two tables on a shared key; a missing condition multiplies rows.</li><li><span class="src">Database design:</span> Normalisation removes repeating groups and places each fact in one table.</li></ol>
+    <ol class="results"><li><span class="src">Arithmetic:</span> To find the cost of many items, divide the total by the pack size to get the unit price, then multiply by the number you want.</li><li><span class="src">Algebra:</span> To expand two brackets, multiply each term in the first by each term in the second, then collect like terms.</li><li><span class="src">Arithmetic:</span> Add fractions by first writing them with a common denominator, then add the numerators and keep the denominator.</li></ol>
     <p class="note">Vectors are hand-authored for teaching. A real system uses an embedding model.</p>
   </div>
   </main>

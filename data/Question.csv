@@ -1,7 +1,7 @@
 question_id,quiz_id,topic_id,question_text
-1,1,1,Identify the entities in a quiz result.
-2,1,1,Define the primary key of the attempt table.
-3,1,2,Write a GROUP BY query for the correct-answer rate.
-4,2,2,Join Question and Topic to report by topic.
-5,2,3,Store a quiz document in a document database.
-6,2,3,Explain how a similarity search finds related material.
+1,1,1,"A pack of 3 apples costs $2. How much do 9 apples cost?"
+2,1,1,Write 1/2 + 1/4 as a single fraction.
+3,1,2,Solve for x: 2x + 3 = 11.
+4,2,2,Expand (x + 2)(x - 3).
+5,2,3,Find the area of a rectangle with length 5 cm and width 3 cm.
+6,2,3,What is the sum of the interior angles of a triangle?
