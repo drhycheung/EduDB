@@ -81,28 +81,25 @@
   <div class="banner"><b>Static preview. This is not the running application.</b>This page shows fixed copies of the EduDB screens. No database is connected. The sign-in form, the topic selector and the search box do not work here. The working application runs on your own computer with Docker. Read the README for the setup steps.</div>
   <header class="appbar">
     <div class="brand"><span class="glyph">E</span> EduDB <span class="pill">Preview</span></div>
-    <nav class="main"><a href="index.html">Dashboard</a><a href="progress.html">Progress</a><a href="myattempts.html">My attempts</a><a href="search.html">Search</a><a href="documents.html" class="active">Documents</a><a href="chart.html">Chart</a><a href="parquet.html">Parquet</a><a href="login.html">Sign in</a><span class="userchip">Teacher</span></nav>
+    <nav class="main"><a href="index.html">Dashboard</a><a href="progress.html">Progress</a><a href="myattempts.html">My attempts</a><a href="search.html">Search</a><a href="documents.html" class="active">Remarks</a><a href="chart.html">Chart</a><a href="parquet.html">Parquet</a><a href="login.html">Sign in</a><span class="userchip">Teacher</span></nav>
   </header>
     <main>
-    <div class="screen-head"><h1>Question bank</h1><span class="tag-preview">Static preview</span></div>
+    <div class="screen-head"><h1>Remarks</h1><span class="tag-preview">Static preview</span></div>
     
-  <p class="sub">The questions learners answered. Teachers can add a teaching note to any question. Shown here: the current notes.</p>
+  <p class="sub">Teacher comments on each learner's performance. Each learner has one remark. Learners can read only their own remark.</p>
   <div class="panel">
-    <h2>Question bank</h2>
-    <table><caption>Rendered example with synthetic data. Values do not change.</caption>
-      <thead><tr><th>ID</th><th>Question</th><th>Title</th><th>Updated</th></tr></thead>
-      <tbody><tr><td>1</td><td>Q3</td><td>Solving 2x + 3 = 11</td><td><code>2027-01-26 10:00:00</code></td></tr><tr><td>2</td><td>Q5</td><td>Rectangle area</td><td><code>2027-02-02 10:00:00</code></td></tr></tbody>
+    <h2>Remarks</h2>
+    <table><caption>One remark per learner. Values shown are a rendered example.</caption>
+      <thead><tr><th>ID</th><th>Learner</th><th>Remark</th><th>Updated</th></tr></thead>
+      <tbody><tr><td>1</td><td>Learner 1</td><td>Steady progress. Review long division.</td><td><code>2027-01-26</code></td></tr><tr><td>2</td><td>Learner 2</td><td>Improving. Focus on Algebra word problems.</td><td><code>2027-02-02</code></td></tr><tr><td>3</td><td>Learner 3</td><td>Strong on Arithmetic. Needs help with Geometry.</td><td><code>2027-01-29</code></td></tr><tr><td>4</td><td>Learner 4</td><td>On track. Keep practising fractions.</td><td><code>2027-02-05</code></td></tr><tr><td>5</td><td>Learner 5</td><td>Good effort. Watch time on quizzes.</td><td><code>2027-01-31</code></td></tr><tr><td>6</td><td>Learner 6</td><td>Excellent. Ready for extension tasks.</td><td><code>2027-02-03</code></td></tr></tbody>
     </table>
-    <p class="note">Example note content:</p>
-    <div class="mono">Q3 — Solving 2x + 3 = 11
-Subtract 3 from both sides: 2x = 8. Divide by 2: x = 4.</div><div class="mono">Q5 — Rectangle area
-Area = length x width = 5 x 3 = 15 cm squared.</div>
+    <p class="note">Each learner sees only their own remark in the running application. The teacher sees every remark above.</p>
   </div>
   <div class="panel">
-    <h2>Add or edit a note</h2>
+    <h2>Add or edit a remark</h2>
     <div class="controls">
-      <input type="text" value="Question ID" disabled style="width:120px">
-      <input type="text" value="Title" disabled style="width:220px">
+      <select disabled style="width:140px"><option>Learner 1</option><option>Learner 2</option></select>
+      <input type="text" value="Write a remark..." disabled style="width:320px">
       <button disabled>Save</button>
       <span class="badge-only">Preview only</span>
     </div>
