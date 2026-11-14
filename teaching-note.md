@@ -3,8 +3,8 @@
 This note explains the design choices behind the EduDB demonstration application.
 It is written for the teacher and for students who want to understand the *why*,
 not only the *how*. The course is **INT4087 — Web Database Applications for Data
-Analytics** (EdUHK). Read it together with `README.md` (how to run) and
-`EduDB-planning.md` (the full feature plan).
+Analytics** (EdUHK). To run the application, see [README.md](README.md). For the
+full feature plan, see `EduDB-planning.md`.
 
 ---
 
@@ -176,7 +176,8 @@ only models some of them.
 ## 6. How students should use this demo
 
 1. Open the static preview to see the finished result.
-2. Follow `README.md` to run the application on your own computer with Docker.
+2. Follow [README.md](README.md) to run the application on your own computer
+   with Docker.
 3. Read `app.py` one block at a time, in the lesson order (L04 to L09).
 4. For each screen, ask: which table does this read, and which query produced
    this number?

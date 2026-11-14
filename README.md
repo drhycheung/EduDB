@@ -17,8 +17,8 @@ A **live demo (static preview)** is published here:
 That page shows fixed copies of the EduDB screens with synthetic data. It is a
 rendered preview, **not the running application**: no database is connected and
 the forms do not work there. The running application runs on your own computer
-with Docker. Follow the steps below to start it. See `teaching-note.md` for why
-the demo is built this way.
+with Docker. Follow the steps below to start it. For the design rationale and how
+the demo maps to the course, read [teaching-note.md](teaching-note.md).
 
 ## Features
 
@@ -33,6 +33,67 @@ the demo is built this way.
 | F7 | Remarks | Teacher adds one remark per learner (MongoDB); learner reads only their own |
 | F8 | Chart | Bar chart drawn with plain HTML, no script |
 | F9 | Parquet | The same rate read from a Parquet file with DuckDB |
+
+## Database schema
+
+The application stores its facts in seven relational tables in PostgreSQL. The
+entity-relationship diagram below shows the tables and how they link.
+
+```mermaid
+erDiagram
+    STUDENT ||--o{ ENROLMENT : "enrolls"
+    COURSE  ||--o{ ENROLMENT : "offers"
+    COURSE  ||--o{ QUIZ : "contains"
+    QUIZ    ||--o{ QUESTION : "has"
+    TOPIC   ||--o{ QUESTION : "classifies"
+    STUDENT ||--o{ ATTEMPT : "answers"
+    QUESTION ||--o{ ATTEMPT : "is answered by"
+
+    STUDENT {
+        int student_id PK
+        string display_name
+        string password_hash
+        string password_salt
+    }
+    COURSE {
+        int course_id PK
+        string course_title
+    }
+    ENROLMENT {
+        int student_id PK,FK
+        int course_id PK,FK
+    }
+    TOPIC {
+        int topic_id PK
+        string topic_name
+    }
+    QUIZ {
+        int quiz_id PK
+        int course_id FK
+        int quiz_week
+    }
+    QUESTION {
+        int question_id PK
+        int quiz_id FK
+        int topic_id FK
+        string question_text
+    }
+    ATTEMPT {
+        int attempt_id PK
+        int student_id FK
+        int question_id FK
+        boolean is_correct
+        datetime attempted_at
+    }
+```
+
+`Attempt.is_correct` is nullable. A `NULL` means the learner skipped the question;
+it is not counted as a wrong answer (see [teaching-note.md](teaching-note.md),
+section 2.1).
+
+Teacher remarks are **not** in this relational schema. They live in a separate
+MongoDB collection, one document per learner, and power feature F7 and the L06
+NoSQL lesson. See [teaching-note.md](teaching-note.md), section 2.2.
 
 ## Before you start
 
@@ -132,7 +193,7 @@ EduDB/
   app.py            # the whole application (one file)
   schema.sql        # table definitions
   seed.py           # loads the synthetic data
-  data/             # CSV data files and the documents file
+  data/             # CSV data files and remarks.json (MongoDB seed)
   templates/        # Jinja2 HTML templates
   docker-compose.yml# starts PostgreSQL and MongoDB
   requirements.txt  # Python packages
