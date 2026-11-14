@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% set title = "Remarks" %}
+{% block body %}
+  {% if error %}
+  <div class="panel">
+    <h2>Remarks</h2>
+    <p class="sub">{{ error }}</p>
+  </div>
+  {% elif teacher %}
+  <div class="panel">
+    <h2>Teacher remarks</h2>
+    <p class="sub">One remark per learner, stored in MongoDB. Edit a learner's remark and save it.</p>
+    <table>
+      <caption>Remarks collection in MongoDB ({{ mongo_coll }}).</caption>
+      <thead><tr><th>Learner</th><th>Remark</th><th>Updated</th><th></th></tr></thead>
+      <tbody>
+      {% for s in students %}
+        <tr>
+          <td>{{ s.display_name }}</td>
+          <td>
+            <form method="post">
+              <input type="hidden" name="action" value="update">
+              <input type="hidden" name="student_id" value="{{ s.student_id }}">
+              <input type="hidden" name="display_name" value="{{ s.display_name }}">
+              <textarea name="remark" rows="2" cols="50">{{ s.remark }}</textarea>
+              <button type="submit">Save</button>
+            </form>
+          </td>
+          <td>{{ s.updated_at }}</td>
+          <td>
+            {% if s.remark %}
+            <form method="post" style="display:inline">
+              <input type="hidden" name="action" value="delete">
+              <input type="hidden" name="student_id" value="{{ s.student_id }}">
+              <button type="submit">Delete</button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="panel">
+    <h2>Your remark</h2>
+    <p class="sub">Your teacher's remark on your performance. Only your teacher can change it.</p>
+    {% if own %}
+      <p>{{ own.remark }}</p>
+      <p class="note">Last updated {{ own.updated_at }} by {{ own.by }}.</p>
+    {% else %}
+      <p class="note">Your teacher has not written a remark for you yet.</p>
+    {% endif %}
+  </div>
+  {% endif %}
+{% endblock %}

@@ -16,7 +16,6 @@ with Docker, as described in the README.
 # Standard libraries that ship with Python.
 import csv          # reads the comma-separated data files
 import hashlib      # builds one-way password hashes with a salt
-import json         # reads and writes the documents file
 import math         # used by the cosine similarity calculation
 import os           # reads environment variables and builds file paths
 import re           # splits question text into words for keyword search
@@ -26,6 +25,7 @@ from datetime import datetime  # stamps the time a document is edited
 # Third-party libraries installed from requirements.txt.
 import duckdb       # reads the Parquet copy of the attempts table
 import psycopg      # connects to PostgreSQL
+from pymongo import MongoClient  # connects to MongoDB for F7 teacher remarks
 from flask import (Flask, redirect, render_template, request, make_response)
 
 # Read settings from a ".env" file when one exists. This keeps the database
@@ -47,10 +47,6 @@ SESSIONS = {}  # session_id -> {"user_id", "role", "name"}
 # works on any computer.
 DATA = os.path.join(os.path.dirname(__file__), "data")
 
-# Path to the question documents file used by the create/read/update/delete
-# feature. It is plain JSON so students can open and edit it by hand.
-DOC_PATH = os.path.join(DATA, "documents.json")
-
 # Database connection settings. They come from environment variables so the
 # same code runs on a laptop and on a server. The default values match
 # docker-compose.yml and .env.example.
@@ -61,6 +57,26 @@ DB = dict(
     user=os.environ.get("DB_USER", "postgres"),
     password=os.environ.get("DB_PASSWORD", "postgres"),
 )
+
+# MongoDB connection settings for F7 (teacher remarks). One document per
+# learner. The defaults match docker-compose.yml and .env.example.
+MONGO = dict(
+    host=os.environ.get("MONGO_HOST", "localhost"),
+    port=int(os.environ.get("MONGO_PORT", "27017")),
+    db=os.environ.get("MONGO_DB", "edudb"),
+    coll=os.environ.get("MONGO_COLLECTION", "remarks"),
+)
+
+# One shared MongoDB client. We connect lazily (on first use) so pages that do
+# not need MongoDB still work when it is not running yet.
+_mongo_client = None
+
+def get_mongo():
+    """Return the remarks collection, connecting on first call."""
+    global _mongo_client
+    if _mongo_client is None:
+        _mongo_client = MongoClient(MONGO["host"], MONGO["port"], serverSelectionTimeoutMS=5000)
+    return _mongo_client[MONGO["db"]][MONGO["coll"]]
 
 # Secret key used to sign the session cookie. In class we set this from .env
 # (SECRET_KEY). The default value is for local teaching only.
@@ -278,53 +294,60 @@ def search():  # F6 keyword and vector retrieval over excerpts
                            excerpts=EXCERPTS, practice=PRACTICE, user=current_user())
 
 
-def load_docs():
-    """Read the documents file and return it as a Python list of records."""
-    with open(DOC_PATH) as f:
-        return json.load(f)
-
-
-def save_docs(docs):
-    """Write the list of records back to the documents file, nicely indented."""
-    with open(DOC_PATH, "w") as f:
-        json.dump(docs, f, indent=2)
-
-
-@app.route("/documents", methods=["GET", "POST"])
-def documents():  # F7 create, read, update, delete on question documents
-    # Only a signed-in user may open this page. Teachers may edit the notes;
-    # learners may read them. This keeps the editor away from learners.
+@app.route("/remarks", methods=["GET", "POST"])
+def remarks():  # F7 teacher remarks on each learner, stored in MongoDB
+    # Only a signed-in user may open this page. Teachers add remarks; learners
+    # read only their own. This keeps the writing role with the teacher.
     user = current_user()
     if not user:
         return redirect("/login")
-    docs = load_docs()
+    try:
+        coll = get_mongo()
+    except Exception:
+        return render_template("remarks.html", user=user, teacher=(user["role"] == "teacher"),
+                               error="Remarks are unavailable: MongoDB is not running. "
+                                     "Start it with 'docker compose up -d'.", students=[], own=None)
+    mongo_coll = f"{MONGO['db']}.{MONGO['coll']}"
     if request.method == "POST":
-        # Only a teacher may change the notes. A learner's POST is ignored.
+        # Only a teacher may change remarks. A learner's POST is ignored.
         if user["role"] != "teacher":
-            return redirect("/documents")
-        # The form tells us which of the four actions to perform.
+            return redirect("/remarks")
         action = request.form.get("action")
-        if action == "create":
-            # Add a new record. We pick the next id as one more than the largest
-            # id already present. This keeps ids unique without a database.
-            docs.append({"doc_id": max([d["doc_id"] for d in docs] + [0]) + 1,
-                         "question_id": int(request.form["question_id"]),
-                         "title": request.form["title"], "body": request.form["body"],
-                         "updated_at": datetime.now().isoformat(timespec="seconds")})
-        elif action == "update":
-            # Find the record by id and replace its editable fields.
-            for d in docs:
-                if d["doc_id"] == int(request.form["doc_id"]):
-                    d.update(question_id=int(request.form["question_id"]), title=request.form["title"],
-                             body=request.form["body"], updated_at=datetime.now().isoformat(timespec="seconds"))
+        sid = int(request.form["student_id"])
+        if action == "update":
+            # Upsert one remark document per learner, matched on student_id, so
+            # each learner keeps a single record the teacher can revise.
+            coll.update_one(
+                {"student_id": sid},
+                {"$set": {"student_id": sid, "display_name": request.form["display_name"],
+                          "remark": request.form["remark"],
+                          "updated_at": datetime.now().isoformat(timespec="seconds"),
+                          "by": user["name"]}},
+                upsert=True)
         elif action == "delete":
-            # Keep every record except the one with the chosen id.
-            docs = [d for d in docs if d["doc_id"] != int(request.form["doc_id"])]
-        save_docs(docs)
-        # After a change, show the page again with the updated list.
-        return redirect("/documents")
-    # GET request: show the current list of documents.
-    return render_template("documents.html", docs=docs, user=user, teacher=(user["role"] == "teacher"))
+            coll.delete_one({"student_id": sid})
+        return redirect("/remarks")
+    # GET request.
+    if user["role"] == "teacher":
+        # List every learner with their current remark so the teacher can edit.
+        conn = get_conn()
+        students = conn.execute(
+            "SELECT student_id, display_name FROM student WHERE display_name != 'Teacher' "
+            "ORDER BY student_id").fetchall()
+        conn.close()
+        stored = {r["student_id"]: r for r in coll.find()}
+        rows = []
+        for sid, name in students:
+            rec = stored.get(sid)
+            rows.append({"student_id": sid, "display_name": name,
+                         "remark": rec["remark"] if rec else "",
+                         "updated_at": rec["updated_at"] if rec else ""})
+        return render_template("remarks.html", students=rows, mongo_coll=mongo_coll,
+                               user=user, teacher=True)
+    # A learner sees only their own remark.
+    own = coll.find_one({"student_id": user["user_id"]})
+    return render_template("remarks.html", own=own, mongo_coll=mongo_coll,
+                           user=user, teacher=False)
 
 
 @app.route("/chart", methods=["GET", "POST"])

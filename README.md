@@ -19,7 +19,7 @@ enough to print and read in class.
 | F4 | My attempts | A learner's own attempts; teacher sees everyone's |
 | F5 | Sign in | Teacher / learner roles, one hash check |
 | F6 | Search | Keyword and vector search over teaching notes |
-| F7 | Question bank | Teacher adds teaching notes; learner reads only |
+| F7 | Remarks | Teacher adds one remark per learner (MongoDB); learner reads only their own |
 | F8 | Chart | Bar chart drawn with plain HTML, no script |
 | F9 | Parquet | The same rate read from a Parquet file with DuckDB |
 
@@ -27,10 +27,13 @@ enough to print and read in class.
 
 Install these once. (They are free.)
 
-- **Python 3.11 or newer** — https://www.python.org/downloads/
+- **Python 3.9 or newer** — https://www.python.org/downloads/
   Check: `python3 --version` (macOS / Linux) or `python --version` (Windows)
 - **Docker Desktop** — https://www.docker.com/products/docker-desktop/
   Check: `docker --version`
+  After installing, **open Docker Desktop and wait until the whale icon in the
+  menu bar stops moving** (the engine is ready). `docker compose up -d` fails
+  with "Cannot connect to the Docker daemon" if Docker is not running.
 - **Git** — https://git-scm.com/downloads
   Check: `git --version`
 
@@ -120,7 +123,7 @@ EduDB/
   seed.py           # loads the synthetic data
   data/             # CSV data files and the documents file
   templates/        # Jinja2 HTML templates
-  docker-compose.yml# starts PostgreSQL
+  docker-compose.yml# starts PostgreSQL and MongoDB
   requirements.txt  # Python packages
   docs/             # static preview published with GitHub Pages
 ```

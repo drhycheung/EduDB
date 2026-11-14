@@ -76,7 +76,7 @@
       <a href="/progress" {% if request.path == '/progress' %}class="active"{% endif %}>Progress</a>
       <a href="/student" {% if request.path == '/student' %}class="active"{% endif %}>My attempts</a>
       <a href="/search" {% if request.path == '/search' %}class="active"{% endif %}>Search</a>
-      <a href="/documents" {% if request.path == '/documents' %}class="active"{% endif %}>Question bank</a>
+      <a href="/remarks" {% if request.path == '/remarks' %}class="active"{% endif %}>Remarks</a>
       <a href="/chart" {% if request.path == '/chart' %}class="active"{% endif %}>Chart</a>
       <a href="/parquet" {% if request.path == '/parquet' %}class="active"{% endif %}>Parquet</a>
       {% if user %}<a href="/logout">Sign out</a><span class="userchip">{{ user.name }}</span>

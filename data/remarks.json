@@ -1,0 +1,8 @@
+[
+  {"student_id": 2, "display_name": "Learner 1", "remark": "Steady work on fractions. Review linear equations before the next quiz.", "updated_at": "2026-11-14T09:00:00", "by": "Teacher"},
+  {"student_id": 3, "display_name": "Learner 2", "remark": "Strong on unit price. More practice needed on word problems.", "updated_at": "2026-11-14T09:05:00", "by": "Teacher"},
+  {"student_id": 4, "display_name": "Learner 3", "remark": "Good progress overall. Watch the time spent on multi-step questions.", "updated_at": "2026-11-14T09:10:00", "by": "Teacher"},
+  {"student_id": 5, "display_name": "Learner 4", "remark": "Improving on adding fractions. Keep practising the common-denominator step.", "updated_at": "2026-11-14T09:15:00", "by": "Teacher"},
+  {"student_id": 6, "display_name": "Learner 5", "remark": "Solid on linear equations. Try harder mixed-topic sets for a challenge.", "updated_at": "2026-11-14T09:20:00", "by": "Teacher"},
+  {"student_id": 7, "display_name": "Learner 6", "remark": "Needs support with unit price. Arrange a short one-to-one session.", "updated_at": "2026-11-14T09:25:00", "by": "Teacher"}
+]
