@@ -74,18 +74,21 @@ Windows. You do not need to change anything for AirPlay.
 
 ### macOS and Linux
 
-Open a terminal in an empty folder and run this whole block:
+Open a terminal in an empty folder and run this whole block. The `#` notes are
+comments — you can copy the block as it is; the shell ignores them. The nine
+steps download the project, create an isolated Python environment, start the two
+databases with Docker, load the sample data, and launch the web app.
 
 ```bash
-git clone https://github.com/drhycheung/EduDB.git
-cd EduDB
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env
-docker compose up -d
-python seed.py
-flask run --port 5055
+git clone https://github.com/drhycheung/EduDB.git   # 1. download the project from GitHub
+cd EduDB                                            # 2. enter the project folder
+python3 -m venv .venv                               # 3. create an isolated Python environment
+source .venv/bin/activate                           # 4. switch the terminal into that environment
+pip install -r requirements.txt                     # 5. install the required Python packages
+cp .env.example .env                                # 6. create your local settings file
+docker compose up -d                                # 7. start PostgreSQL and MongoDB in containers
+python seed.py                                     # 8. load the synthetic sample data into the databases
+flask run --port 5055                              # 9. start the web application
 ```
 
 Then open http://localhost:5055 in your browser.
@@ -93,7 +96,8 @@ Then open http://localhost:5055 in your browser.
 ### Windows
 
 Open **Command Prompt** (or PowerShell) in an empty folder and run this whole
-block:
+block. The nine steps are the same as the macOS block above (the `#` notes there
+explain each one); only three commands differ, as noted at the end.
 
 ```cmd
 git clone https://github.com/drhycheung/EduDB.git
