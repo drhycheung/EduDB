@@ -169,6 +169,12 @@ only models some of them.
   reading only. The demo uses Python with Flask as the worked example.
 - **Row-level security.** The demo checks the user role in Python. The course
   discusses database-level row security separately.
+- **SQLite.** The course does not include SQLite in the running demo. The
+  relational model is already taught by PostgreSQL, and a second relational
+  engine would add teaching surface without a new data model. SQLite remains a
+  useful zero-setup first SQL exercise that students may explore on their own; it
+  is excluded here to keep the demo minimal and to favour the client-server model
+  that a web application needs.
 
 ---
 
@@ -186,3 +192,99 @@ only models some of them.
 The demo is a reference object. Your group project builds its own application in
 its own private repository. You may reuse the patterns, but the dataset and the
 code are yours to design.
+
+---
+
+## 7. Why Docker, DuckDB, and Parquet are used
+
+This section explains the three supporting technologies and why each earns a
+place in the demo. The short theme is the same as section 2: choose the right
+tool for the job.
+
+### 7.1 Docker: one command runs two real databases
+
+`docker compose up -d` starts two database servers — PostgreSQL 16 and MongoDB 7
+— each in its own container, each with a named volume for storage.
+
+Reasons it is used:
+
+- **Identical environment for every student.** macOS, Windows, and Linux all run
+  the same PostgreSQL 16 and MongoDB 7. This removes the "works on my machine"
+  problem that appears when students install database servers by hand.
+- **No system-level install.** A database server normally needs services, ports,
+  and data directories. Docker bundles them; the only prerequisite is Docker
+  Desktop. It also avoids clashing with any database already installed.
+- **Clean, repeatable teardown.** `docker compose down` stops both servers;
+  `docker compose down -v` wipes the data for a clean reset, and re-running
+  `seed.py` returns the demo to a known state.
+- **It makes polyglot persistence real.** Running a relational engine and a
+  document engine side by side, from one compose file, mirrors a production
+  multi-database stack and supports the L06 NoSQL lesson.
+
+Trade-off: Docker adds one prerequisite — Docker Desktop must be installed *and
+running*. The README states this explicitly, because a stopped Docker daemon is
+the most common student failure. A simpler single-file demo could avoid servers
+altogether, but then the real-client lessons (connection strings, ports,
+`psycopg`) and the relational-versus-document contrast would be lost.
+
+### 7.2 DuckDB: an in-process analytical engine
+
+DuckDB is a columnar SQL engine that runs *inside the Python process*. There is
+no server, no host, no port, and no password. In this demo it appears in two
+places: `seed.py` writes the Parquet file, and feature F9 reads it with
+`duckdb.connect()`.
+
+Reasons it is used:
+
+- **It contrasts analytical engines.** The same question — "what is the overall
+  correct-answer rate?" — is answered by PostgreSQL over a live connection (F1)
+  and by DuckDB over a file (F9). Both return the same number, but the paths and
+  trade-offs differ.
+- **It shows SQL is portable.** The same SQL dialect works across PostgreSQL,
+  DuckDB, and (with small differences) SQLite. Students see that SQL is a skill,
+  not a single product.
+- **It is lightweight.** DuckDB needs no container. A third storage engine is
+  demonstrated without adding a third service.
+- **It serves the analytics half of the course title.** L09 (Analytics and
+  visualisation) uses the DuckDB check as the "read from a columnar file" step.
+
+### 7.3 Parquet: the columnar file format
+
+Parquet is a columnar file format. `seed.py` exports the `attempt` table to
+`data/attempts.parquet` using a DuckDB `COPY` statement. Feature F9 then reads
+that file.
+
+Reasons it is used:
+
+- **Columnar storage reads less data.** A query that touches few columns reads
+  only those column blocks, not whole rows. With many rows this is a large saving
+  in disk input and time.
+- **Better compression.** Values in one column are the same type and often
+  similar, so they compress well. Smaller files read faster.
+- **It is the industry-standard analytics format.** Data lakes and warehouses
+  (Spark, Athena, and others) store analytics data as Parquet. One lesson makes
+  the format familiar.
+- **It models a real reporting pipeline.** The path — operational database,
+  export a snapshot, analyse with a different engine — is how company reporting
+  works, scaled up.
+
+One teaching caution: the Parquet file is a *snapshot* taken at seed time. If new
+attempts are added to PostgreSQL later, F9 will not reflect them until `seed.py`
+runs again. The live F1 dashboard always shows current data; F9 shows the file
+copy. That contrast — static analytical copy versus live transactional source —
+is itself part of the lesson.
+
+### 7.4 How the three fit the course
+
+Docker, DuckDB, and Parquet are not extra topics. Together they complete the
+picture that section 2 begins:
+
+- Docker runs the **two databases** (relational and document) that section 2
+  describes.
+- DuckDB and Parquet add the **analytical layer** that the course title promises.
+- The split is the standard Online Transaction Processing (OLTP) versus Online
+  Analytical Processing (OLAP) pattern: PostgreSQL serves the live app, and the
+  Parquet file plus DuckDB serve reporting.
+
+The demo therefore shows four storage models — relational, document, columnar
+file, and the in-process engine — under one small, consistent "right tool" theme.
