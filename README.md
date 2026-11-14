@@ -119,14 +119,19 @@ and whether you are on macOS or Windows.
 
 ## Stop the database
 
-When you are done, stop the database container:
+The application uses two containers started by `docker compose`: **PostgreSQL**
+and **MongoDB**. Both are managed together.
+
+When you are done, stop both containers:
 
 ```bash
 docker compose down
 ```
 
-This stops PostgreSQL but keeps your data for next time. To also delete the
-database data (a clean reset), add the volume flag:
+This stops PostgreSQL and MongoDB, but keeps their data in Docker volumes for
+next time. Closing Docker Desktop also stops both containers (and they restart
+when you open Docker Desktop and run `docker compose up -d` again). To also
+delete the stored data (a clean reset), add the volume flag:
 
 ```bash
 docker compose down -v
