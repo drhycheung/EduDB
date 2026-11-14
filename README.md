@@ -1,13 +1,24 @@
 # EduDB
 
 A minimal, server-side learning analytics demo for **INT4087 — Web Database
-Applications** (EdUHK). The whole application is one Flask file with nine
+Applications for Data Analytics** (EdUHK). The whole application is one Flask file with nine
 features (F1–F9). It uses PostgreSQL for the facts and DuckDB for a Parquet
 copy, and it uses no JavaScript, so every number on the screen comes from one
 SQL query.
 
 The goal is teaching: each function maps to one lesson, and the code is short
 enough to print and read in class.
+
+## Live demo (static preview)
+
+A **live demo (static preview)** is published here:
+<https://drhycheung.github.io/EduDB/>
+
+That page shows fixed copies of the EduDB screens with synthetic data. It is a
+rendered preview, **not the running application**: no database is connected and
+the forms do not work there. The running application runs on your own computer
+with Docker. Follow the steps below to start it. See `teaching-note.md` for why
+the demo is built this way.
 
 ## Features
 
