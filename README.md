@@ -6,8 +6,10 @@ features (F1–F9). It uses PostgreSQL for the facts, MongoDB for the teacher
 remarks, and DuckDB to read a columnar Parquet copy of the attempts. DuckDB is
 an in-process analytical engine: feature F9 uses it to answer the same question
 as the live dashboard, but from a file instead of the running database, which
-shows the analytics (OLAP) half of the course. It uses no JavaScript, so every
-number on the screen comes from one SQL query.
+shows the analytics (OLAP) half of the course. It uses no JavaScript: every
+number on the screen comes from a server-side SQL query (PostgreSQL for F1–F5
+and F8, DuckDB for F9). The only non-SQL data is the teacher remarks in F7
+(MongoDB) and the reading matches in F6 (a CSV file).
 
 The goal is teaching: each function maps to one lesson, and the code is short
 enough to print and read in class.
