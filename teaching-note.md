@@ -97,6 +97,14 @@ A useful boundary to state in class: the keyword and vector search (F6) does
 cosine similarity in Python, so it needs no database at all. MongoDB is used only
 for the teacher remarks (F7).
 
+**F6 as the retrieval stage of RAG.** The search screen is labelled the retrieval
+stage of Retrieval-Augmented Generation (RAG): the excerpts it returns are the
+texts a model would read to answer the question. The app shows the retrieval half
+only and does not call a model to generate an answer. A **retrieval-quality panel**
+under the results lets the teacher mark each returned note as answering or not
+(through plain links, with no JavaScript), then discuss chunking and reranking. The
+marks are kept in memory for the lesson and cleared when the server restarts.
+
 ### 2.3 Why keep both, instead of one database?
 
 Three reasons, all relevant to the course.

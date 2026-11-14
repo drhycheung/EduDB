@@ -34,7 +34,7 @@ the demo maps to the course, read [teaching-note.md](teaching-note.md).
 | F3 | Progress | Success rate per learner on each quiz — teacher sees all, learner sees only self |
 | F4 | My attempts | A learner's own attempts; teacher sees everyone's |
 | F5 | Sign in | Teacher / learner roles, one hash check |
-| F6 | Search | Keyword and vector search over teaching notes |
+| F6 | Search | Keyword and vector search over teaching notes (the retrieval stage of RAG) |
 | F7 | Remarks | Teacher adds one remark per learner (MongoDB); learner reads only their own |
 | F8 | Chart | Bar chart drawn with plain HTML, no script |
 | F9 | Parquet | The same rate read from a Parquet file with DuckDB |

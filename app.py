@@ -123,6 +123,12 @@ def load_excerpts():
 # application runs.
 EXCERPTS = load_excerpts()
 
+# In-memory marks for the F6 retrieval-quality panel. The key is (question id,
+# excerpt index); the value is "yes" or "no" for "does this note answer the
+# question". This is a teaching aid only. It lives in the server process and is
+# cleared when the program restarts, like the SESSIONS store above.
+RAG_MARKS = {}
+
 # Three practice questions used by the search screen. Each has a hand-written
 # vector that points toward the kind of note it should match. The questions are
 # about school maths so students see clearly that this is sample data, not the
@@ -273,11 +279,21 @@ def logout():
 
 
 @app.route("/search")
-def search():  # F6 keyword and vector retrieval over excerpts
+def search():  # F6 keyword and vector retrieval over excerpts; the retrieval stage of RAG
+    # F6 is the retrieval stage of Retrieval-Augmented Generation (RAG): a model
+    # would read the excerpts below to answer the question. This demo shows the
+    # retrieval half only; it does not call a model to generate an answer.
     # If no question was chosen, show the search page with all excerpts.
     qid = request.args.get("qid", type=int)
     if not qid:
         return render_template("search.html", excerpts=EXCERPTS, practice=PRACTICE, user=current_user())
+    # A teacher can mark each returned excerpt as answering the question or not.
+    # The mark arrives as a plain link click (no JavaScript) and is kept in the
+    # RAG_MARKS dictionary for the lesson.
+    mark = request.args.get("mark", type=int)
+    val = request.args.get("val")
+    if mark is not None and val in ("yes", "no"):
+        RAG_MARKS[(qid, mark)] = val
     # Find the chosen practice question.
     pq = next(p for p in PRACTICE if p["id"] == qid)
     # Common words (stopwords) carry little meaning, so we ignore them. We also
@@ -288,9 +304,14 @@ def search():  # F6 keyword and vector retrieval over excerpts
     # Keyword search: keep excerpts that contain any of the question words.
     keyword = [e for e in EXCERPTS if any(w in e["excerpt_text"].lower() for w in words)]
     # Vector search: rank excerpts by cosine similarity to the question vector
-    # and keep the three closest. This finds meaning, not just matching words.
-    vector = sorted(EXCERPTS, key=lambda e: cosine(pq["vec"], e["vec"]), reverse=True)[:3]
+    # and keep the three closest. We keep the original index so the teacher mark
+    # can find its row, and we keep the score so the panel can show it.
+    ranked = sorted(range(len(EXCERPTS)),
+                    key=lambda i: cosine(pq["vec"], EXCERPTS[i]["vec"]),
+                    reverse=True)[:3]
+    vector = [(i, EXCERPTS[i], cosine(pq["vec"], EXCERPTS[i]["vec"])) for i in ranked]
     return render_template("search.html", pq=pq, keyword=keyword, vector=vector,
+                           marks=RAG_MARKS, qid=qid,
                            excerpts=EXCERPTS, practice=PRACTICE, user=current_user())
 
 

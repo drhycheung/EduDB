@@ -3,6 +3,7 @@
 {% block body %}
   <div class="panel">
     <p class="sub">Keyword and vector (semantic) search over the teaching notes attached to the questions.</p>
+    <p class="note"><b>RAG retrieval stage.</b> These results are the texts a model would read to answer the question. This demo shows the retrieval half only; the answer-generation half is out of scope.</p>
     <form method="get">
       <label>Practice question:
         <select name="qid">
@@ -19,9 +20,24 @@
     <ul>{% for e in keyword %}<li><b>{{ e.topic }}</b>: {{ e.excerpt_text }}</li>{% else %}<li>No keyword match.</li>{% endfor %}</ul>
   </div>
   <div class="panel">
-    <h2>Vector (semantic) results</h2>
-    <ol>{% for e in vector %}<li><b>{{ e.topic }}</b>: {{ e.excerpt_text }}</li>{% endfor %}</ol>
+    <h2>Vector (semantic) results — the RAG retrieval stage</h2>
+    <ol>{% for i, e, score in vector %}<li><b>{{ e.topic }}</b>: {{ e.excerpt_text }} <span class="score">score {{ "%.3f"|format(score) }}</span></li>{% endfor %}</ol>
     <p class="note">Vectors are hand-authored for teaching. A real system uses an embedding model.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Retrieval quality</h2>
+    <p class="sub">Does each returned note actually answer the question? Mark it, then discuss chunking and reranking.</p>
+    <ol>
+      {% for i, e, score in vector %}
+      <li>
+        {{ e.excerpt_text }}
+        <a href="?qid={{ qid }}&amp;mark={{ i }}&amp;val=yes">Answers</a>
+        <a href="?qid={{ qid }}&amp;mark={{ i }}&amp;val=no">Does not</a>
+        {% if marks.get((qid, i)) %}<span class="mark-state">marked: {{ marks.get((qid, i)) }}</span>{% endif %}
+      </li>
+      {% endfor %}
+    </ol>
   </div>
   {% endif %}
 {% endblock %}
