@@ -3,8 +3,7 @@
 This note explains the design choices behind the EduDB demonstration application.
 It is written for the teacher and for students who want to understand the *why*,
 not only the *how*. The course is **INT4087 — Web Database Applications for Data
-Analytics** (EdUHK). To run the application, see [README.md](README.md). For the
-full feature plan, see `EduDB-planning.md`.
+Analytics** (EdUHK). To run the application, see [README.md](README.md).
 
 ---
 
