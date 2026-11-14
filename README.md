@@ -89,7 +89,23 @@ the templates. This order follows the data from the table definition to the scre
 
 ## Run locally
 
-These steps assume you have Python 3.11+, Docker, and Git installed.
+### Before you start
+
+Install these tools, then check their versions in a terminal:
+
+- **Python 3.11+:** Download it from [python.org](https://www.python.org/downloads/)
+  for macOS or Windows, or run `brew install python` on macOS with Homebrew.
+  On Windows, select the option to add Python to PATH during installation.
+  Check with `python --version` (or `python3 --version` on macOS/Linux).
+- **Docker Desktop:** Download and install it for
+  [macOS or Windows](https://www.docker.com/products/docker-desktop/). Start Docker
+  Desktop and wait for it to be running before using `docker compose up -d`.
+  Check with `docker --version`.
+- **Git:** Run `brew install git` on macOS with Homebrew, or download it from
+  [git-scm.com](https://git-scm.com/downloads) for Windows. Check with `git --version`.
+
+On Linux, install Python 3.11+, Docker with the Compose plugin, and Git using your
+distribution's instructions. Windows commands below use Command Prompt (`cmd`).
 
 1. **Get the code.** Clone the repository, then enter the folder:
    ```
@@ -103,8 +119,14 @@ These steps assume you have Python 3.11+, Docker, and Git installed.
    python3 -m venv .venv
    source .venv/bin/activate
    ```
+   On Windows Command Prompt, use:
+   ```cmd
+   python -m venv .venv
+   .venv\Scripts\activate
+   ```
    Your shell prompt should now show `(.venv)`. Every command below must run
-   with this virtual environment active. On Windows use `.venv\Scripts\activate`.
+   with this virtual environment active. If `python` is unavailable on Windows,
+   try `py` instead.
 
 3. **Install the Python packages** listed in requirements.txt:
    ```
@@ -116,6 +138,7 @@ These steps assume you have Python 3.11+, Docker, and Git installed.
    ```
    cp .env.example .env
    ```
+   On Windows Command Prompt, use `copy .env.example .env` instead.
    The new `.env` is private and is never committed. It already contains a
    working `SECRET_KEY` for local use, so you do not need to edit it. See the
    Deployment note for how to set a strong key before any real deployment.
@@ -130,27 +153,43 @@ These steps assume you have Python 3.11+, Docker, and Git installed.
    ```
    python3 seed.py
    ```
-   Re-running this command resets the database to the sample data, so it is safe to run again.
+   On Windows use `python seed.py`. Re-running this command resets the database to the
+   sample data, so it is safe to run again. If PostgreSQL is still starting, wait a
+   few seconds and run it again.
 
 7. **Run the application.** Keep the virtual environment active: your shell
    prompt should show `(.venv)`. Then:
    ```
-   flask run
+   flask run --port 5055
    ```
    If `(.venv)` is not shown, the command would use your system Python
    (for example Anaconda) and fail with `ModuleNotFoundError`. Activate first
-   with `source .venv/bin/activate`, or run the app directly with
-   `.venv/bin/flask run`. Then open http://localhost:5000 in your browser.
+   with `source .venv/bin/activate` (Windows: `.venv\Scripts\activate`), or run
+   the app directly with `.venv/bin/flask run --port 5055`. Then open
+   http://localhost:5055 in your browser.
 
-Sign in as `Teacher` / `teacher123` (sees all rows) or `Learner 1` to `Learner 6` / `learner123`.
+   EduDB uses port 5055 instead of the usual 5000. On macOS the AirPlay Receiver
+   often reserves port 5000, which would block the app; 5055 avoids that conflict
+   on macOS and Windows alike, so the same command works everywhere.
+
+   Sign in as `Teacher` / `teacher123` (sees all rows) or `Learner 1` to
+   `Learner 6` / `learner123`.
+
+8. **Stop the database** when finished. Stop Flask with Ctrl+C, then run:
+   ```bash
+   docker compose down
+   ```
+   This stops and removes the PostgreSQL container while preserving its data. Use
+   `docker compose down -v` only when you intend to delete the database volume
+   and reset all its data.
 
 ### All commands in one block
 
-Copy and paste the block below in order (macOS / Linux). It performs every step above.
-The `.env` created by `cp .env.example .env` already has a working `SECRET_KEY`,
-so no extra editing is needed. On Windows, replace `source .venv/bin/activate`
-with `.venv\Scripts\activate`.
+Run the block for your platform after installing the prerequisites and starting
+Docker Desktop. The copied `.env` already has a working `SECRET_KEY`, so no extra
+editing is needed. The readiness check waits for PostgreSQL before loading data.
 
+**macOS / Linux:**
 ```bash
 git clone https://github.com/drhycheung/EduDB.git
 cd EduDB
@@ -159,27 +198,37 @@ source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
 docker compose up -d
+docker compose exec -T db sh -c "until pg_isready -h 127.0.0.1 -U postgres -d edudb; do sleep 1; done"
 python3 seed.py
-flask run
+flask run --port 5055
+# Open http://localhost:5055 in your browser.
 ```
+
+**Windows Command Prompt:**
+```cmd
+git clone https://github.com/drhycheung/EduDB.git
+cd EduDB
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+copy .env.example .env
+docker compose up -d
+docker compose exec -T db sh -c "until pg_isready -h 127.0.0.1 -U postgres -d edudb; do sleep 1; done"
+python seed.py
+flask run --port 5055
+rem Open http://localhost:5055 in your browser.
+```
+
+In either case, stop Flask with Ctrl+C and run `docker compose down` when finished.
 
 ## Troubleshooting
 
-- **Port 5000 already in use (macOS).** On macOS the AirPlay Receiver often
-  holds port 5000, so `flask run` may fail to start, or the browser may show a
-  `403` from a service other than EduDB. Turn off AirPlay Receiver (System
-  Settings > General > AirDrop & Handoff > AirPlay Receiver), or run on another
-  port and open that address instead:
-  ```bash
-  flask run --port 5055
-  ```
-  Then open http://localhost:5055 .
 - **`ModuleNotFoundError: No module named 'duckdb'` (or `psycopg`).** The command
   ran with your system Python instead of the virtual environment. Make sure the
-  prompt shows `(.venv)`; if not, run `source .venv/bin/activate` first, or use
-  `.venv/bin/flask run`.
+  prompt shows `(.venv)`; if not, activate it as in step 2.
 - **"Wrong username or password" for every account.** Run `python3 seed.py`
-  again so the accounts are loaded, then restart `flask run`.
+  (Windows: `python seed.py`) again so the accounts are loaded, then restart
+  `flask run --port 5055`.
 
 ## Data
 
