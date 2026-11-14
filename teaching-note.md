@@ -17,8 +17,10 @@ Consequences:
 - The whole application is **one Python file** (`app.py`) with eight short HTML
   page templates that share one base layout. A student can print the file and
   read it in class.
-- There is **no JavaScript**. Every number on the screen comes from one SQL
-  query that the teacher can read.
+- There is **no JavaScript**. Every number on the screen comes from a
+  server-side SQL query (PostgreSQL for F1–F5 and F8, DuckDB for F9). The only
+  non-SQL data is the teacher remarks in F7 (MongoDB) and the reading matches in
+  F6 (a CSV file).
 - There is **no object-relational mapper**. SQL stays visible as plain text
   inside the Python code, so students see the exact query that produced each
   table.
@@ -223,7 +225,7 @@ that the existing lesson outcomes refer to. The table below shows the main links
 | Lesson | Course topic | What the demo shows |
 |--------|--------------|---------------------|
 | L01 | Database concepts and environment | The labelled static preview, then the finished app on three screens |
-| L02–L03 | Data modelling and normalisation | The seven entities in the entity-relationship diagram, then the seven-table schema with one `NULL` |
+| L02–L03 | Data modelling and normalisation | The entity-relationship diagram: six entities at L02, then seven after Topic is added at L03, then the seven-table schema with one `NULL` |
 | L04 | Introduction to SQL | Tables created, CSV loaded, first correct-answer rate |
 | L05 | Advanced SQL and generated queries | Progress view, a wrong query, the corrected join |
 | L06 | NoSQL and vector data | Remarks page (MongoDB) and keyword/vector search |
