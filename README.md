@@ -2,9 +2,9 @@
 
 A minimal, server-side learning analytics demo for **INT4087 — Web Database
 Applications for Data Analytics** (EdUHK). The whole application is one Flask file with nine
-features (F1–F9). It uses PostgreSQL for the facts and DuckDB for a Parquet
-copy, and it uses no JavaScript, so every number on the screen comes from one
-SQL query.
+features (F1–F9). It uses PostgreSQL for the facts, MongoDB for the teacher
+remarks, and DuckDB to read a Parquet copy of the attempts. It uses no
+JavaScript, so every number on the screen comes from one SQL query.
 
 The goal is teaching: each function maps to one lesson, and the code is short
 enough to print and read in class.
