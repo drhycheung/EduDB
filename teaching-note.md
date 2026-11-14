@@ -111,97 +111,13 @@ the four basics — nothing hidden.
 
 ---
 
-## 3. How the demo maps to the course
-
-The demo does not add any new learning outcome. It supplies the concrete object
-that the existing lesson outcomes refer to. The table below shows the main links.
-
-| Lesson | Course topic | What the demo shows |
-|--------|--------------|---------------------|
-| L01 | Database concepts and environment | The labelled static preview, then the finished app on three screens |
-| L02–L03 | Data modelling and normalisation | The six entities, then the seven-table schema with one `NULL` |
-| L04 | Introduction to SQL | Tables created, CSV loaded, first correct-answer rate |
-| L05 | Advanced SQL and generated queries | Progress view, a wrong query, the corrected join |
-| L06 | NoSQL and vector data | Remarks page (MongoDB) and keyword/vector search |
-| L07 | Web database applications | First Flask route and first template |
-| L08 | Sessions, authentication, safe access | Sign-in, roles, parameterised query, password hashing |
-| L09 | Analytics and visualisation | Chart, Parquet check with DuckDB, full read-through |
-
-**CILO coverage.** CILO3 is "design, build and query SQL and NoSQL databases".
-The demo serves it directly: PostgreSQL covers the SQL side (L04–L05, L09) and
-MongoDB covers the NoSQL side (L06). CILO4 (develop web database applications for
-data analytics) is served by the Flask pages (L07–L09). The demo keeps the
-assessment unchanged; it is a teaching object, not a new requirement.
-
----
-
-## 4. The static preview versus the running application
-
-GitHub Pages publishes the `docs/` folder as a website. GitHub Pages **cannot run
-Python** and **cannot connect to a database**. For that reason the online page is
-a **static preview**: fixed copies of the screens, clearly labelled on every page.
-
-Keep three cases distinct:
-
-| What is shown | Where it runs | Python running | Database connected |
-|---------------|---------------|----------------|--------------------|
-| Static preview | GitHub Pages, from `docs/` | No | No |
-| Working app in class | Docker on the lab machine | Yes | Yes |
-| Actually deployed app | A host that runs Python (not used in this course) | Yes | Yes |
-
-The preview link is in `README.md` under "Live demo (static preview)". It is
-labelled as a preview, not as the running application, on purpose.
-
----
-
-## 5. What the demo leaves out (and the course still teaches)
-
-The demo is deliberately small. The course still covers these topics; the demo
-only models some of them.
-
-- **Hosted cloud databases.** Supabase (hosted PostgreSQL) and Firebase Cloud
-  Firestore (hosted document database) appear in L04 as a demonstration. The local
-  EduDB app does not use them.
-- **Vector extensions and embedding models.** L06 explains how embeddings are
-  produced. The demo uses hand-authored concept vectors and plain-Python cosine
-  similarity, so no model or key is needed at runtime.
-- **PHP.** The previous course run used PHP. Its examples stay as reference
-  reading only. The demo uses Python with Flask as the worked example.
-- **Row-level security.** The demo checks the user role in Python. The course
-  discusses database-level row security separately.
-- **SQLite.** The course does not include SQLite in the running demo. The
-  relational model is already taught by PostgreSQL, and a second relational
-  engine would add teaching surface without a new data model. SQLite remains a
-  useful zero-setup first SQL exercise that students may explore on their own; it
-  is excluded here to keep the demo minimal and to favour the client-server model
-  that a web application needs.
-
----
-
-## 6. How students should use this demo
-
-1. Open the static preview to see the finished result.
-2. Follow [README.md](README.md) to run the application on your own computer
-   with Docker.
-3. Read `app.py` one block at a time, in the lesson order (L04 to L09).
-4. For each screen, ask: which table does this read, and which query produced
-   this number?
-5. Compare the PostgreSQL tables with the MongoDB remarks. State one difference
-   between the two data models in your own words.
-
-The demo is a reference object. Your group project builds its own application in
-its own private repository. You may reuse the patterns, but the dataset and the
-code are yours to design.
-
----
-
-## 7. Why Docker, DuckDB, and Parquet are used
+## 3. Why Docker, DuckDB, and Parquet are used
 
 This section explains the three supporting technologies and why each earns a
 place in the demo. The short theme is the same as section 2: choose the right
 tool for the job.
 
-### 7.1 Docker: one command runs two real databases
+### 3.1 Docker: one command runs two real databases
 
 `docker compose up -d` starts two database servers — PostgreSQL 16 and MongoDB 7
 — each in its own container, each with a named volume for storage.
@@ -227,7 +143,7 @@ the most common student failure. A simpler single-file demo could avoid servers
 altogether, but then the real-client lessons (connection strings, ports,
 `psycopg`) and the relational-versus-document contrast would be lost.
 
-### 7.2 DuckDB: an in-process analytical engine
+### 3.2 DuckDB: an in-process analytical engine
 
 DuckDB is a columnar SQL engine that runs *inside the Python process*. There is
 no server, no host, no port, and no password. In this demo it appears in two
@@ -248,7 +164,7 @@ Reasons it is used:
 - **It serves the analytics half of the course title.** L09 (Analytics and
   visualisation) uses the DuckDB check as the "read from a columnar file" step.
 
-### 7.3 Parquet: the columnar file format
+### 3.3 Parquet: the columnar file format
 
 Parquet is a columnar file format. `seed.py` exports the `attempt` table to
 `data/attempts.parquet` using a DuckDB `COPY` statement. Feature F9 then reads
@@ -274,7 +190,7 @@ runs again. The live F1 dashboard always shows current data; F9 shows the file
 copy. That contrast — static analytical copy versus live transactional source —
 is itself part of the lesson.
 
-### 7.4 How the three fit the course
+### 3.4 How the three fit the course
 
 Docker, DuckDB, and Parquet are not extra topics. Together they complete the
 picture that section 2 begins:
@@ -288,3 +204,87 @@ picture that section 2 begins:
 
 The demo therefore shows four storage models — relational, document, columnar
 file, and the in-process engine — under one small, consistent "right tool" theme.
+
+---
+
+## 4. How the demo maps to the course
+
+The demo does not add any new learning outcome. It supplies the concrete object
+that the existing lesson outcomes refer to. The table below shows the main links.
+
+| Lesson | Course topic | What the demo shows |
+|--------|--------------|---------------------|
+| L01 | Database concepts and environment | The labelled static preview, then the finished app on three screens |
+| L02–L03 | Data modelling and normalisation | The six entities, then the seven-table schema with one `NULL` |
+| L04 | Introduction to SQL | Tables created, CSV loaded, first correct-answer rate |
+| L05 | Advanced SQL and generated queries | Progress view, a wrong query, the corrected join |
+| L06 | NoSQL and vector data | Remarks page (MongoDB) and keyword/vector search |
+| L07 | Web database applications | First Flask route and first template |
+| L08 | Sessions, authentication, safe access | Sign-in, roles, parameterised query, password hashing |
+| L09 | Analytics and visualisation | Chart, Parquet check with DuckDB, full read-through |
+
+**CILO coverage.** CILO3 is "design, build and query SQL and NoSQL databases".
+The demo serves it directly: PostgreSQL covers the SQL side (L04–L05, L09) and
+MongoDB covers the NoSQL side (L06). CILO4 (develop web database applications for
+data analytics) is served by the Flask pages (L07–L09). The demo keeps the
+assessment unchanged; it is a teaching object, not a new requirement.
+
+---
+
+## 5. The static preview versus the running application
+
+GitHub Pages publishes the `docs/` folder as a website. GitHub Pages **cannot run
+Python** and **cannot connect to a database**. For that reason the online page is
+a **static preview**: fixed copies of the screens, clearly labelled on every page.
+
+Keep three cases distinct:
+
+| What is shown | Where it runs | Python running | Database connected |
+|---------------|---------------|----------------|--------------------|
+| Static preview | GitHub Pages, from `docs/` | No | No |
+| Working app in class | Docker on the lab machine | Yes | Yes |
+| Actually deployed app | A host that runs Python (not used in this course) | Yes | Yes |
+
+The preview link is in `README.md` under "Live demo (static preview)". It is
+labelled as a preview, not as the running application, on purpose.
+
+---
+
+## 6. What the demo leaves out (and the course still teaches)
+
+The demo is deliberately small. The course still covers these topics; the demo
+only models some of them.
+
+- **Hosted cloud databases.** Supabase (hosted PostgreSQL) and Firebase Cloud
+  Firestore (hosted document database) appear in L04 as a demonstration. The local
+  EduDB app does not use them.
+- **Vector extensions and embedding models.** L06 explains how embeddings are
+  produced. The demo uses hand-authored concept vectors and plain-Python cosine
+  similarity, so no model or key is needed at runtime.
+- **PHP.** The previous course run used PHP. Its examples stay as reference
+  reading only. The demo uses Python with Flask as the worked example.
+- **Row-level security.** The demo checks the user role in Python. The course
+  discusses database-level row security separately.
+- **SQLite.** The course does not include SQLite in the running demo. The
+  relational model is already taught by PostgreSQL, and a second relational
+  engine would add teaching surface without a new data model. SQLite remains a
+  useful zero-setup first SQL exercise that students may explore on their own; it
+  is excluded here to keep the demo minimal and to favour the client-server model
+  that a web application needs.
+
+---
+
+## 7. How students should use this demo
+
+1. Open the static preview to see the finished result.
+2. Follow [README.md](README.md) to run the application on your own computer
+   with Docker.
+3. Read `app.py` one block at a time, in the lesson order (L04 to L09).
+4. For each screen, ask: which table does this read, and which query produced
+   this number?
+5. Compare the PostgreSQL tables with the MongoDB remarks. State one difference
+   between the two data models in your own words.
+
+The demo is a reference object. Your group project builds its own application in
+its own private repository. You may reuse the patterns, but the dataset and the
+code are yours to design.
