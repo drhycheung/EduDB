@@ -42,9 +42,55 @@ the demo maps to the course, read [teaching-note.md](teaching-note.md).
 ## Database schema
 
 The application stores its facts in seven relational tables in PostgreSQL. The
-entity-relationship diagram below shows the tables and how they link.
+entity-relationship diagram below shows the tables, keys, and how they link.
 
-![EduDB entity-relationship diagram](er-diagram.svg)
+```mermaid
+erDiagram
+    STUDENT {
+        INTEGER student_id PK
+        TEXT display_name
+        TEXT password_hash
+        TEXT password_salt
+    }
+    COURSE {
+        INTEGER course_id PK
+        TEXT course_title
+    }
+    ENROLMENT {
+        INTEGER student_id PK, FK
+        INTEGER course_id PK, FK
+    }
+    TOPIC {
+        INTEGER topic_id PK
+        TEXT topic_name
+    }
+    QUIZ {
+        INTEGER quiz_id PK
+        INTEGER course_id FK "nullable"
+        INTEGER quiz_week
+    }
+    QUESTION {
+        INTEGER question_id PK
+        INTEGER quiz_id FK "nullable"
+        INTEGER topic_id FK "nullable"
+        TEXT question_text
+    }
+    ATTEMPT {
+        INTEGER attempt_id PK
+        INTEGER student_id FK "nullable"
+        INTEGER question_id FK "nullable"
+        BOOLEAN is_correct "nullable"
+        TEXT attempted_at
+    }
+
+    STUDENT ||--o{ ENROLMENT : enrolls
+    COURSE ||--o{ ENROLMENT : includes
+    COURSE o|--o{ QUIZ : has
+    QUIZ o|--o{ QUESTION : contains
+    TOPIC o|--o{ QUESTION : classifies
+    STUDENT o|--o{ ATTEMPT : makes
+    QUESTION o|--o{ ATTEMPT : receives
+```
 
 `Attempt.is_correct` is nullable. A `NULL` means the learner skipped the question;
 it is not counted as a wrong answer (see [teaching-note.md](teaching-note.md),
