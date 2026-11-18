@@ -44,7 +44,53 @@ the demo maps to the course, read [teaching-note.md](teaching-note.md).
 The application stores its facts in seven relational tables in PostgreSQL. The
 entity-relationship diagram below shows the tables and how they link.
 
-![EduDB entity-relationship diagram](er-diagram.svg)
+```mermaid
+erDiagram
+    STUDENT ||--o{ ENROLMENT : "enrolls"
+    COURSE  ||--o{ ENROLMENT : "offers"
+    COURSE  ||--o{ QUIZ : "contains"
+    QUIZ    ||--o{ QUESTION : "has"
+    TOPIC   ||--o{ QUESTION : "classifies"
+    STUDENT ||--o{ ATTEMPT : "answers"
+    QUESTION ||--o{ ATTEMPT : "is answered by"
+
+    STUDENT {
+        int student_id PK
+        string display_name
+        string password_hash
+        string password_salt
+    }
+    COURSE {
+        int course_id PK
+        string course_title
+    }
+    ENROLMENT {
+        int student_id PK,FK
+        int course_id PK,FK
+    }
+    TOPIC {
+        int topic_id PK
+        string topic_name
+    }
+    QUIZ {
+        int quiz_id PK
+        int course_id FK
+        int quiz_week
+    }
+    QUESTION {
+        int question_id PK
+        int quiz_id FK
+        int topic_id FK
+        string question_text
+    }
+    ATTEMPT {
+        int attempt_id PK
+        int student_id FK
+        int question_id FK
+        boolean is_correct
+        datetime attempted_at
+    }
+```
 
 `Attempt.is_correct` is nullable. A `NULL` means the learner skipped the question;
 it is not counted as a wrong answer (see [teaching-note.md](teaching-note.md),
