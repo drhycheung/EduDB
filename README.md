@@ -42,54 +42,54 @@ the demo maps to the course, read [teaching-note.md](teaching-note.md).
 ## Database schema
 
 The application stores its facts in seven relational tables in PostgreSQL. The
-entity-relationship diagram below shows the tables, keys, and how they link.
+entity-relationship diagram below shows the tables and how they link.
 
 ```mermaid
 erDiagram
+    STUDENT ||--o{ ENROLMENT : "enrolls"
+    COURSE  ||--o{ ENROLMENT : "offers"
+    COURSE  ||--o{ QUIZ : "contains"
+    QUIZ    ||--o{ QUESTION : "has"
+    TOPIC   ||--o{ QUESTION : "classifies"
+    STUDENT ||--o{ ATTEMPT : "answers"
+    QUESTION ||--o{ ATTEMPT : "is answered by"
+
     STUDENT {
-        INTEGER student_id PK
-        TEXT display_name
-        TEXT password_hash
-        TEXT password_salt
+        int student_id PK
+        string display_name
+        string password_hash
+        string password_salt
     }
     COURSE {
-        INTEGER course_id PK
-        TEXT course_title
+        int course_id PK
+        string course_title
     }
     ENROLMENT {
-        INTEGER student_id PK, FK
-        INTEGER course_id PK, FK
+        int student_id PK,FK
+        int course_id PK,FK
     }
     TOPIC {
-        INTEGER topic_id PK
-        TEXT topic_name
+        int topic_id PK
+        string topic_name
     }
     QUIZ {
-        INTEGER quiz_id PK
-        INTEGER course_id FK "nullable"
-        INTEGER quiz_week
+        int quiz_id PK
+        int course_id FK
+        int quiz_week
     }
     QUESTION {
-        INTEGER question_id PK
-        INTEGER quiz_id FK "nullable"
-        INTEGER topic_id FK "nullable"
-        TEXT question_text
+        int question_id PK
+        int quiz_id FK
+        int topic_id FK
+        string question_text
     }
     ATTEMPT {
-        INTEGER attempt_id PK
-        INTEGER student_id FK "nullable"
-        INTEGER question_id FK "nullable"
-        BOOLEAN is_correct "nullable"
-        TEXT attempted_at
+        int attempt_id PK
+        int student_id FK
+        int question_id FK
+        boolean is_correct
+        datetime attempted_at
     }
-
-    STUDENT ||--o{ ENROLMENT : enrolls
-    COURSE ||--o{ ENROLMENT : includes
-    COURSE o|--o{ QUIZ : has
-    QUIZ o|--o{ QUESTION : contains
-    TOPIC o|--o{ QUESTION : classifies
-    STUDENT o|--o{ ATTEMPT : makes
-    QUESTION o|--o{ ATTEMPT : receives
 ```
 
 `Attempt.is_correct` is nullable. A `NULL` means the learner skipped the question;
