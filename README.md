@@ -39,6 +39,39 @@ the demo maps to the course, read [teaching-note.md](teaching-note.md).
 | F8 | Chart | Bar chart drawn with plain HTML, no script |
 | F9 | Parquet | The same rate read from a Parquet file with DuckDB |
 
+## System architecture
+
+The diagram shows the parts of the running application. Everything except the
+browser runs on your own computer.
+
+```mermaid
+flowchart TB
+    UI["Browser<br/>localhost:5055"]
+    Flask["Flask app (app.py)<br/>Jinja2 templates"]
+    Duck["DuckDB<br/>in-process engine"]
+    PG[("PostgreSQL 16<br/>seven tables")]
+    Mongo[("MongoDB 7<br/>remarks collection")]
+    CSV[("excerpts.csv<br/>reading excerpts")]
+    PQ[("attempts.parquet<br/>attempt snapshot")]
+
+    UI <-->|"HTTP / HTML"| Flask
+    Flask -->|"psycopg"| PG
+    Flask -->|"PyMongo"| Mongo
+    Flask -->|"Python csv"| CSV
+    Flask -->|"SQL"| Duck
+    Duck -->|"file read"| PQ
+```
+
+PostgreSQL and MongoDB run in Docker containers. The CSV and Parquet files stay
+in the project folder. DuckDB runs inside the Python process. `seed.py` creates
+the tables, loads the sample rows and remarks, and writes the Parquet snapshot.
+
+PostgreSQL answers the SQL questions in F1 to F5 and F8. MongoDB stores one
+remark document per learner in F7. The CSV file supplies the reading excerpts
+for F6. DuckDB reads the Parquet snapshot for F9. Flask returns complete HTML
+pages, so the browser needs no script. The static preview on GitHub Pages uses
+fixed HTML copies and connects to none of these parts.
+
 ## Database schema
 
 The application stores its facts in seven relational tables in PostgreSQL. The
